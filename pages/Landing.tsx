@@ -61,7 +61,7 @@ const HERO_SLIDES = [
     id: 0,
     // Intro - Busy Delhi Market Scene (Simulated High-Res)
     // Depicting market activity, fuel stations, deliveries etc
-    image: 'https://images.unsplash.com/photo-1567427018141-0584cfcbf1b8?q=100&w=3840&auto=format&fit=crop', 
+    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/viksit%20barath.jpg'.
     headline: "EC1000 Duo",
     subtext: "RBI inspired LSP, Turning Micro-Access into Macro-Momentum for Viksit Bharat 2047.",
     fallbackColor: "bg-zinc-900"
