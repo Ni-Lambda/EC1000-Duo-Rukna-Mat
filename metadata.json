@@ -1,0 +1,7 @@
+{
+  "name": "EC1000 Duo - Rukna Mat",
+  "description": "Your trusted liquidity partner for everyday essentials. Instant approvals, simple repayments, and no hidden charges.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
