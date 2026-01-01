@@ -44,35 +44,35 @@ const SPEND_HIGHLIGHTS = [
     { 
         id: 'h1', 
         title: 'Fuel on the Go', 
-        image: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=800', 
+        // Image removed
         desc: 'Pay at any petrol pump' 
     },
     { 
         id: 'h2', 
         title: 'Weekly Groceries', 
-        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800', 
+        // Image removed
         desc: 'Fresh veggies & staples' 
     },
     { 
         id: 'h3', 
         title: 'Pharmacy Needs', 
-        image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=800', 
+        // Image removed
         desc: 'Medicines & healthcare' 
     },
     { 
         id: 'h4', 
         title: 'Utility Bills', 
-        image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=800', 
+        // Image removed
         desc: 'Electricity, Water, Gas' 
     },
 ];
 
 const EC_CASH_USE_CASES = [
-  { id: 1, src: 'https://images.unsplash.com/photo-1589786410274-1421e42b2608?auto=format&fit=crop&q=80&w=600', label: '₹1000 Cash' },
-  { id: 2, src: 'https://images.unsplash.com/photo-1617347454431-f49d7ff5c3b1?auto=format&fit=crop&q=80&w=600', label: 'Partner Support' },
-  { id: 3, src: 'https://images.unsplash.com/photo-1626847037657-fd3622613ce3?auto=format&fit=crop&q=80&w=600', label: 'Fuel Refill' },
-  { id: 4, src: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&q=80&w=600', label: 'Daily Grocery' },
-  { id: 5, src: 'https://images.unsplash.com/photo-1586953208448-b958c3add408?auto=format&fit=crop&q=80&w=600', label: 'Mobile Recharge' }
+  { id: 1, label: '₹1000 Cash' },
+  { id: 2, label: 'Partner Support' },
+  { id: 3, label: 'Fuel Refill' },
+  { id: 4, label: 'Daily Grocery' },
+  { id: 5, label: 'Mobile Recharge' }
 ];
 
 interface BankOffer {
@@ -308,13 +308,17 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
             <h3 className="text-lg font-bold text-zinc-800 dark:text-white mb-3 px-1">Explore Spending</h3>
             <div className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide snap-x -mx-4 px-4 md:mx-0 md:px-0">
                 {SPEND_HIGHLIGHTS.map((item) => (
-                    <div key={item.id} className="snap-center flex-none w-[85%] md:w-80 h-48 relative overflow-hidden shadow-sm group cursor-pointer border border-zinc-200 dark:border-zinc-800">
-                        <img 
-                            src={item.image} 
-                            alt={item.title}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                        />
+                    <div key={item.id} className="snap-center flex-none w-[85%] md:w-80 h-48 relative overflow-hidden shadow-sm group cursor-pointer border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800">
+                        {/* @ts-ignore */}
+                        {item.image && (
+                            <img 
+                                // @ts-ignore
+                                src={item.image} 
+                                alt={item.title}
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                            />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/20 to-transparent flex flex-col justify-end p-5">
                             <h3 className="text-white font-bold text-xl mb-1">{item.title}</h3>
                             <p className="text-zinc-300 text-sm font-medium border-l-2 border-green-500 pl-2">{item.desc}</p>
@@ -388,12 +392,16 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
                                 {EC_CASH_USE_CASES.map((item) => (
                                     <div key={item.id} className="flex-none w-32 snap-start group relative border border-zinc-200 dark:border-zinc-700 shadow-sm">
                                         <div className="aspect-[4/3] bg-zinc-100 dark:bg-zinc-800">
-                                            <img 
-                                                src={item.src} 
-                                                alt={item.label} 
-                                                referrerPolicy="no-referrer"
-                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                            />
+                                            {/* @ts-ignore */}
+                                            {item.src && (
+                                                <img 
+                                                    // @ts-ignore
+                                                    src={item.src} 
+                                                    alt={item.label} 
+                                                    referrerPolicy="no-referrer"
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                />
+                                            )}
                                         </div>
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-2">
                                             <span className="text-white text-[10px] font-bold leading-tight">{item.label}</span>
@@ -715,7 +723,7 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
 
   return (
     <div className="animate-fade-in">
-         <h2 className="text-2xl font-bold text-zinc-800 dark:text-white mb-6 px-1">EC Duo</h2>
+         <h2 className="text-2xl font-bold text-zinc-800 dark:text-white mb-6 px-1">EC <span className="text-emerald-600 dark:text-emerald-500">Duo</span></h2>
          {rootView === 'SELECTION' && renderSelection()}
          {rootView === 'SPEND_LIST' && renderSpendList()}
     </div>

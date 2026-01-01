@@ -78,7 +78,7 @@ export const QuickLogin: React.FC<QuickLoginProps> = ({ user, onLoginSuccess, on
         
         <div className="mt-8 pt-6 border-t border-zinc-100 flex items-center justify-center space-x-2 text-zinc-300">
             <ShieldCheck size={14} />
-            <span className="text-xs font-medium">Secured by EC1000 Duo</span>
+            <span className="text-xs font-medium">Secured by EC1000 <span className="text-emerald-500">Duo</span></span>
         </div>
       </div>
     </div>

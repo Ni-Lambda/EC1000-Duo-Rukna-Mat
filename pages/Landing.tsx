@@ -60,42 +60,43 @@ const HERO_SLIDES = [
   {
     id: 0,
     // Intro - Busy Delhi Market Scene (Simulated High-Res)
-    // Depicting market activity, fuel stations, deliveries etc
-    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/viksit%20barath.jpg'.
+    // Depicting market activity, fuel stations, deliveries etc.
+    // Updated to raw.githubusercontent.com for reliable video streaming
+    video: 'https://raw.githubusercontent.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/main/busy%20bazar.mp4',
     headline: "EC1000 Duo",
     subtext: "RBI inspired LSP, Turning Micro-Access into Macro-Momentum for Viksit Bharat 2047.",
     fallbackColor: "bg-zinc-900"
   },
   {
     id: 1,
-    // Scenario: Auto Rickshaw / Fuel - 4K High Res
-    image: 'https://images.unsplash.com/photo-1596423736783-cdb58392fb2c?q=100&w=3840&auto=format&fit=crop', 
-    headline: "Rukna Mat.",
-    subtext: "Instant fuel credit for Mumbai's lifelines. Keep the meter running.",
+    // Scenario: Auto Rickshaw / Fuel - UPDATED
+    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/fuels.jpg?raw=true',
+    headline: "EC Spend",
+    subtext: "Get Instant fuel credit for viksit barath Rukna Mat Don't Stop",
     fallbackColor: "bg-zinc-900"
   },
   {
     id: 2,
-    // Scenario: Delivery Partner - 4K High Res - Delivery bag visual
-    image: 'https://images.unsplash.com/photo-1617347454431-f49d7ff5c3b1?q=100&w=3840&auto=format&fit=crop', 
-    headline: "Deliver More, Earn More",
-    subtext: "Never let an empty tank stop your next delivery. Supports Blinkit, Zomato, Swiggy partners.",
+    // Scenario: Mobile/Data - Moved UP
+    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/data%20and%20entertainment.jpg?raw=true',
+    headline: "Data & Entertainment",
+    subtext: "Recharge Data, DTH, OTT platforms for higher value packs. Repay in weekly or bi-weekly smaller amounts.",
     fallbackColor: "bg-zinc-900"
   },
   {
     id: 3,
-    // Scenario: Vegetable Market - 4K High Res
-    image: 'https://images.unsplash.com/photo-1587049359681-3676a82a3576?q=100&w=3840&auto=format&fit=crop', 
-    headline: "Sabzi Mandi Ready",
-    subtext: "Daily capital for your stall. Buy fresh, sell fresh.",
+    // Scenario: Delivery Partner - Moved
+    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/delivery%20partners.jpg?raw=true', 
+    headline: "Deliver More, Earn More",
+    subtext: "Fuel more, Earn More. Supports Blinkit, Zomato, Swiggy, big basket, Zepto partners.",
     fallbackColor: "bg-zinc-900"
   },
   {
     id: 4,
-    // Scenario: Mobile/Data - 5K High Res
-    image: 'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?q=100&w=5000&auto=format&fit=crop', 
-    headline: "Data & Entertainment",
-    subtext: "Recharge Data, DTH, OTT platforms for higher value packs. Repay in weekly or bi-weekly smaller amounts.",
+    // Scenario: EC Cash - Moved Last
+    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/household.jpg?raw=true',
+    headline: "EC Cash",
+    subtext: "Get instant ₹1000 credited to your bank account.",
     fallbackColor: "bg-zinc-900"
   }
 ];
@@ -167,10 +168,10 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
         content: (
             <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
                 <p className="text-lg leading-relaxed text-zinc-900 dark:text-white font-medium">
-                    At EC1000 Duo, we believe in ethical lending practices for the sustainable growth of our community.
+                    At EC1000 <span className="text-emerald-600 dark:text-emerald-500 font-bold">Duo</span>, we believe in ethical lending practices for the sustainable growth of our community.
                 </p>
                 <p className="text-base leading-relaxed">
-                    We believe in providing small liquidity for your daily essentials with <span className="text-emerald-600 dark:text-emerald-400 font-bold">FlexiSmart</span> repayment options. This helps you in many ways, and that is the core idea behind EC1000 Duo: <span className="text-zinc-900 dark:text-white font-bold italic">'Rukna Mat'</span> - Don't Stop. Keep Moving.
+                    We believe in providing small liquidity for your daily essentials with <span className="text-emerald-600 dark:text-emerald-400 font-bold">FlexiSmart</span> repayment options. This helps you in many ways, and that is the core idea behind EC1000 <span className="text-emerald-600 dark:text-emerald-500 font-bold">Duo</span>: <span className="text-zinc-900 dark:text-white font-bold italic">'Rukna Mat'</span> - Don't Stop. Keep Moving.
                 </p>
                 <p className="text-base leading-relaxed">
                     As a <span className="text-zinc-800 dark:text-zinc-100 font-semibold">Lending Service Provider (LSP)</span>, we bridge the gap by partnering with RBI-recognized banks and service providers to ensure safety and trust.
@@ -212,7 +213,7 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
 
                     <div>
                         <h3 className="text-zinc-900 dark:text-white font-bold text-xl mb-2 text-blue-600 dark:text-blue-400">Smart Usage</h3>
-                        <p className="text-sm leading-relaxed">Use EC1000 Duo for high-efficiency needs—full tank fuel to save station visits, or bulk data packs to save money. Don't use it for impulse spending.</p>
+                        <p className="text-sm leading-relaxed">Use EC1000 <span className="text-emerald-600 dark:text-emerald-500 font-bold">Duo</span> for high-efficiency needs—full tank fuel to save station visits, or bulk data packs to save money. Don't use it for impulse spending.</p>
                     </div>
 
                     <div>
@@ -230,7 +231,7 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
             <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
                 <div className="bg-zinc-100 dark:bg-zinc-950 p-6 border border-zinc-200 dark:border-zinc-800">
                     <p className="text-sm text-zinc-500 uppercase font-bold mb-1">Lending Service Provider (LSP)</p>
-                    <p className="text-xl text-zinc-900 dark:text-white font-bold">EC1000 Duo (Rukna Mat)</p>
+                    <p className="text-xl text-zinc-900 dark:text-white font-bold">EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span> (Rukna Mat)</p>
                 </div>
 
                  <div className="bg-zinc-100 dark:bg-zinc-950 p-6 border border-zinc-200 dark:border-zinc-800">
@@ -532,7 +533,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
               ))}
             </nav>
             <div className="mt-auto pt-6 text-xs text-zinc-500 font-medium pb-[env(safe-area-inset-bottom)]">
-              v1.0.0 • EC1000 Duo
+              v1.0.0 • EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span>
             </div>
           </div>
         </div>
@@ -625,7 +626,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
           {HERO_SLIDES.map((slide) => (
             <div
               key={slide.id}
-              className={`w-full h-full flex-shrink-0 snap-center relative overflow-hidden bg-zinc-900`}
+              className={`w-full h-full flex-shrink-0 snap-center relative overflow-hidden bg-zinc-900 rounded-none`}
               role="img"
               aria-label={slide.headline}
             >
@@ -638,57 +639,69 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
                     muted
                     loop
                     playsInline
-                    className="absolute inset-0 w-full h-full object-cover z-0"
+                    className="absolute inset-0 w-full h-full object-cover z-0 rounded-none"
                  />
               ) : (
-                <img 
-                    src={slide.image} 
-                    alt={slide.headline}
-                    className="absolute inset-0 w-full h-full object-cover z-0"
-                    referrerPolicy="no-referrer"
-                />
+                <>
+                    {slide.image && (
+                        <img 
+                            src={slide.image} 
+                            alt={slide.headline}
+                            className={`absolute inset-0 w-full h-full z-0 rounded-none object-cover`}
+                            referrerPolicy="no-referrer"
+                        />
+                    )}
+                </>
               )}
 
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/95 via-zinc-900/60 to-zinc-900/10 z-10"></div>
+              {/* Gradient Overlay - Subtle Top Gradient to clear text, no bottom fade */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent z-10 pointer-events-none"></div>
               
-              {/* Text Content */}
-              <div className="absolute inset-0 z-20 flex flex-col justify-end items-start p-6 pb-20 md:p-16 md:pb-24">
-                <div className="max-w-4xl transform transition-all duration-700 translate-y-0 opacity-100">
-                    <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-3 leading-none tracking-tight shadow-sm drop-shadow-md">
-                    {slide.headline}
-                    </h1>
-                    {/* Removed border-l-4 border-emerald-500 pl-4 inline-block to make it plain text */}
-                    <p className="text-lg md:text-2xl text-zinc-200 font-medium tracking-wide drop-shadow-md">
+              {/* Text Content - Layout Restructured */}
+              
+              {/* Subtext - Extreme Top Left - Minimal Padding */}
+              <div className="absolute top-0 left-0 z-20 px-4 pt-4 md:px-6 md:pt-8 max-w-2xl pointer-events-none text-left">
+                <p className={`text-2xl md:text-4xl font-bold tracking-wide leading-tight shadow-sm drop-shadow-md ${slide.id === 2 ? 'text-black' : 'text-white'}`}>
                     {slide.subtext}
-                    </p>
-                </div>
+                </p>
               </div>
 
-              {/* Call to Action - RESTORED BUTTONS */}
-              <div className="absolute bottom-6 right-6 z-30 md:bottom-12 md:right-12">
-                  <Button 
-                    onClick={() => {
-                       if (slide.id === 4) { // Data & Entertainment Slide
-                          openOverlay('recharge');
-                       } else {
-                          document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' });
-                       }
-                    }} 
-                    className={`${slide.id === 4 ? 'bg-purple-600 hover:bg-purple-700' : 'bg-emerald-600 hover:bg-emerald-700'} text-white shadow-xl font-bold tracking-wide border-none px-6 py-4 text-sm transition-transform hover:scale-105 flex items-center gap-2 rounded-none`}
-                  >
-                    {slide.id === 4 ? (
-                       <>
-                         <Tv size={20} />
-                         Recharge Now
-                       </>
-                    ) : (
-                       <>
-                         Get Connected
-                       </>
-                    )}
-                  </Button>
+              {/* Headline and Button - Extreme Bottom Right - Inline Stack with Faded Line */}
+              <div className="absolute bottom-0 right-0 z-30 flex flex-row items-center gap-6 pointer-events-none justify-end w-full max-w-full px-4 pb-4 md:px-6 md:pb-6">
+                  {/* Headline - Inline with CTA */}
+                  <h1 className={`text-2xl md:text-6xl font-extrabold leading-none tracking-tight shadow-sm drop-shadow-md text-right ${slide.id === 2 ? 'text-black' : 'text-white'}`}>
+                    {slide.headline.split('Duo').map((part, i, arr) => (
+                        <React.Fragment key={i}>
+                            {part}
+                            {i < arr.length - 1 && <span className="text-emerald-500">Duo</span>}
+                        </React.Fragment>
+                    ))}
+                  </h1>
+
+                  {/* Stylish Violet Vertical Line */}
+                  <div className="h-12 md:h-20 w-1.5 bg-violet-500 rounded-full shadow-[0_0_15px_rgba(139,92,246,0.8)] hidden md:block transform rotate-0 mx-2"></div>
+                  
+                  {/* CTA Button */}
+                  <div className="pointer-events-auto shrink-0">
+                      <Button 
+                        onClick={() => {
+                           if (slide.id === 2) { // Data & Entertainment Slide
+                              openOverlay('recharge');
+                           } else {
+                              document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' });
+                           }
+                        }} 
+                        className={`bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl font-bold tracking-wide border-none px-6 py-4 md:px-8 md:py-5 text-base md:text-lg transition-transform hover:scale-105 flex items-center gap-2 rounded-none`}
+                      >
+                        {slide.id === 0 && "Explore Now"}
+                        {slide.id === 1 && "Fuel Now"}
+                        {slide.id === 2 && "Recharge Now"}
+                        {slide.id === 3 && "Earn Now"}
+                        {slide.id === 4 && "Get Now"}
+                      </Button>
+                  </div>
               </div>
+
             </div>
           ))}
         </div>
@@ -717,7 +730,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
                 
                 {/* Left Column: Steps List - More Compact */}
                 <div className="w-full md:w-1/2 p-6 md:p-12 bg-zinc-50 dark:bg-zinc-950 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-800 flex flex-col justify-center">
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-6 md:mb-8">Access EC1000 Duo in 3 Steps</h2>
+                    <h2 className="text-2xl md:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-6 md:mb-8">Access EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span> in 3 Steps</h2>
                     
                     <div className="space-y-6">
                         <div className="flex flex-row items-start space-x-4">
@@ -746,7 +759,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
                              </div>
                              <div>
                                 <h3 className="font-bold text-zinc-900 dark:text-white text-lg mb-0.5">Get Limits</h3>
-                                <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Access EC1000 Duo instantly</p>
+                                <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Access EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span> instantly</p>
                              </div>
                         </div>
                     </div>
@@ -896,10 +909,10 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
          </div>
       </section>
 
-      {/* Partners Strip - Full width */}
+      {/* Partners Strip - Full width - Left Aligned */}
       <section className="py-10 bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
         <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between text-left space-y-4 md:space-y-0 text-zinc-600 dark:text-zinc-300 text-base md:text-lg font-bold tracking-wide uppercase">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-8 text-left text-zinc-600 dark:text-zinc-300 text-base md:text-lg font-bold tracking-wide uppercase flex-wrap">
                 <div className="flex items-center space-x-2 text-zinc-700 dark:text-zinc-200">
                     <ShieldCheck className="text-green-600 dark:text-green-500" size={28} />
                     <span>RBI Inspired</span>
@@ -1021,8 +1034,8 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
 
             {/* Tagline & Copyright */}
             <div className="flex flex-col md:flex-row justify-between items-center text-zinc-600 dark:text-zinc-600 text-xs">
-                <p className="font-medium text-zinc-500 mb-2 md:mb-0">EC1000 Duo - Your liquidity partner for daily essentials.</p>
-                <p>© 2025 EC1000 Duo. All rights reserved.</p>
+                <p className="font-medium text-zinc-500 mb-2 md:mb-0">EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span> - Your liquidity partner for daily essentials.</p>
+                <p>© 2025 EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span>. All rights reserved.</p>
             </div>
         </div>
       </footer>

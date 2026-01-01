@@ -243,7 +243,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
                     <div className="bg-zinc-50 border border-zinc-200 p-6 rounded-none">
                         <h3 className="font-bold text-zinc-800 mb-2">UPI Auto-Debit Mandate</h3>
                         <p className="text-sm text-zinc-500 mb-4 leading-relaxed">
-                            I hereby authorize EC1000 Duo (via SafeLend NBFC) to debit my linked bank account for repayments as per the schedule chosen during transactions. Max limit: ₹5000.
+                            I hereby authorize EC1000 <span className="text-emerald-600 font-bold">Duo</span> (via SafeLend NBFC) to debit my linked bank account for repayments as per the schedule chosen during transactions. Max limit: ₹5000.
                         </p>
                         <div className="flex items-center space-x-2 text-xs text-zinc-400">
                             <ShieldCheck size={14} />

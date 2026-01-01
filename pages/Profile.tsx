@@ -51,7 +51,7 @@ export const Profile: React.FC<ProfileProps> = ({ user, onLogout }) => {
         {/* LSP/RE Footer Info */}
         <div className="mt-8 p-4 text-center border-t border-zinc-200 dark:border-zinc-800">
              <p className="text-xs text-zinc-400 mb-2">Partnered with RBI-regulated NBFCs</p>
-             <p className="text-[10px] text-zinc-300 dark:text-zinc-600">Version 1.0.0 • EC1000 Duo</p>
+             <p className="text-[10px] text-zinc-300 dark:text-zinc-600">Version 1.0.0 • EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span></p>
              <button 
                 onClick={onLogout}
                 className="mt-4 flex items-center justify-center space-x-2 text-red-500 hover:text-red-600 w-full p-2 hover:bg-red-50 dark:hover:bg-red-900/20 active:bg-red-100 transition-colors"
