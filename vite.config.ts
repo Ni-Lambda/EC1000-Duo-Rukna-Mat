@@ -16,7 +16,8 @@ export default defineConfig(({ mode }) => {
       },
       resolve: {
         alias: {
-          '@': path.resolve(__dirname, '.'),
+          // Fix: Use path.resolve('.') as replacement for __dirname which is not available in all environments
+          '@': path.resolve('.'),
         }
       }
     };

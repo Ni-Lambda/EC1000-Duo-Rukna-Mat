@@ -87,12 +87,18 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
      onComplete({
         isAuth: true,
         isOnboarded: true,
-        balance: 800,
-        totalLimit: 1000,
-        usedAmount: 200,
+        // Spend Line
+        totalLimit: 1000, 
+        usedAmount: 200, // Simulated initial usage
+        // Cash Line
+        cashLimit: 1000,
+        cashUsed: 0,
+        
         name: name || 'Rajesh Kumar',
         phone: phone,
-        pin: password
+        pin: password,
+        creditLevel: 1,
+        ecScore: 650
      });
   };
 

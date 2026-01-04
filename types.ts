@@ -1,4 +1,3 @@
-
 export enum AppStage {
   LANDING = 'LANDING',
   ONBOARDING = 'ONBOARDING',
@@ -15,7 +14,7 @@ export enum OnboardingStep {
 }
 
 export enum SpendCategoryType {
-  EC_CASH = 'EC Cash (Bank Transfer)',
+  EC_CASH = 'EC Cash (Self Transfer)', // Updated Name
   FUEL = 'Fuel',
   PHARMA = 'Pharma',
   GROCERY = 'Grocery',
@@ -37,12 +36,22 @@ export interface Transaction {
 export interface UserState {
   isAuth: boolean;
   isOnboarded: boolean;
-  balance: number;
-  totalLimit: number;
+  
+  // Spend Line (Shared across Fuel, Grocery, etc.)
+  totalLimit: number; 
   usedAmount: number;
+
+  // Cash Line (Separate)
+  cashLimit: number;
+  cashUsed: number;
+
   name: string;
   phone?: string;
   pin?: string;
+  
+  // Progression
+  creditLevel: number; // Level 1, 2, 3...
+  ecScore: number; 
 }
 
 export interface RepaymentPlan {
@@ -63,11 +72,11 @@ export interface RepaymentPlan {
 }
 
 export const SPEND_CATEGORIES = [
-  { id: 1, type: SpendCategoryType.EC_CASH, icon: 'Banknote', isAppOnly: true },
-  { id: 2, type: SpendCategoryType.FUEL, icon: 'Fuel', isAppOnly: false },
-  { id: 3, type: SpendCategoryType.PHARMA, icon: 'Pill', isAppOnly: false },
-  { id: 4, type: SpendCategoryType.GROCERY, icon: 'ShoppingBasket', isAppOnly: false },
-  { id: 5, type: SpendCategoryType.MOBILE, icon: 'Smartphone', isAppOnly: true },
-  { id: 6, type: SpendCategoryType.DTH, icon: 'Tv', isAppOnly: true },
-  { id: 7, type: SpendCategoryType.BILLS, icon: 'Receipt', isAppOnly: true },
+  { id: 1, type: SpendCategoryType.EC_CASH, icon: 'Banknote', isAppOnly: true, color: 'text-green-600' },
+  { id: 2, type: SpendCategoryType.FUEL, icon: 'Fuel', isAppOnly: false, color: 'text-orange-600' },
+  { id: 3, type: SpendCategoryType.PHARMA, icon: 'Pill', isAppOnly: false, color: 'text-pink-600' },
+  { id: 4, type: SpendCategoryType.GROCERY, icon: 'ShoppingBasket', isAppOnly: false, color: 'text-green-700' },
+  { id: 5, type: SpendCategoryType.MOBILE, icon: 'Smartphone', isAppOnly: true, color: 'text-blue-600' },
+  { id: 6, type: SpendCategoryType.DTH, icon: 'Tv', isAppOnly: true, color: 'text-purple-600' },
+  { id: 7, type: SpendCategoryType.BILLS, icon: 'Receipt', isAppOnly: true, color: 'text-yellow-600' },
 ];

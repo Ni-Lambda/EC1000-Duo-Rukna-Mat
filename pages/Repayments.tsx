@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '../components/Button';
-import { AlertTriangle, CheckCircle, Calendar } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Calendar, ArrowUpCircle, Loader2 } from 'lucide-react';
 
-export const Repayments: React.FC = () => {
+interface RepaymentsProps {
+    onRepaySuccess?: () => void;
+}
+
+export const Repayments: React.FC<RepaymentsProps> = ({ onRepaySuccess }) => {
+  const [isPaying, setIsPaying] = useState(false);
   const dueAmount = 250;
   const dueDate = 'Today';
   
+  const handlePay = () => {
+      setIsPaying(true);
+      // Simulate Payment Processing
+      setTimeout(() => {
+          setIsPaying(false);
+          if (onRepaySuccess) onRepaySuccess();
+      }, 1500);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
         <h2 className="text-2xl font-bold text-zinc-800 dark:text-white px-1">Repayments</h2>
@@ -48,10 +62,15 @@ export const Repayments: React.FC = () => {
                  </div>
              </div>
 
-             <Button fullWidth>Pay Now</Button>
+             <Button fullWidth onClick={handlePay} disabled={isPaying} className="bg-emerald-600 hover:bg-emerald-700">
+                 {isPaying ? <Loader2 className="animate-spin" /> : 'Pay Now & Unlock +₹1000 Limit'}
+             </Button>
 
              <div className="mt-4 text-center">
-                 <button className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline">View Breakup</button>
+                 <p className="text-xs text-zinc-400">
+                     <ArrowUpCircle className="inline w-3 h-3 mr-1" />
+                     Repayment unlocks an additional <span className="text-emerald-500 font-bold">₹1000 Shared Spend Limit</span> across all categories.
+                 </p>
              </div>
         </div>
 
@@ -59,11 +78,11 @@ export const Repayments: React.FC = () => {
         <div>
              <h3 className="font-bold text-zinc-800 dark:text-white mb-4 px-1">FlexiSmart Options</h3>
              <div className="space-y-3">
-                 <label className="flex items-center p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
+                 <label className="flex items-center p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors border-l-4 border-l-blue-500">
                      <input type="radio" name="flexi" className="w-5 h-5 text-blue-600" defaultChecked />
                      <div className="ml-4">
                          <span className="block font-bold text-zinc-800 dark:text-white">Pay Full Amount</span>
-                         <span className="block text-xs text-zinc-500 dark:text-zinc-400">Clear dues instantly, unlock higher limits.</span>
+                         <span className="block text-xs text-zinc-500 dark:text-zinc-400">Clear dues instantly, Level Up!</span>
                      </div>
                  </label>
                  <label className="flex items-center p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">

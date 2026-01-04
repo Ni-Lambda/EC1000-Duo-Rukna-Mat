@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../components/Button';
-import { Camera, X, CheckCircle, Smartphone, Calendar, Zap, Building2, ArrowLeft, AlertCircle } from 'lucide-react';
-import { RepaymentPlan } from '../types';
+import { Camera, X, CheckCircle, Smartphone, Calendar, Zap, Building2, ArrowLeft, AlertCircle, ShieldCheck, RefreshCw } from 'lucide-react';
+import { RepaymentPlan, UserState } from '../types';
 
 interface ScanPayProps {
     onClose: () => void;
-    balance: number;
+    user?: UserState; 
+    balance?: number; // Legacy prop fallback
 }
 
 // Reuse Banks logic
@@ -44,31 +45,67 @@ interface BankOffer {
     plan: RepaymentPlan;
 }
 
-export const ScanPay: React.FC<ScanPayProps> = ({ onClose, balance }) => {
+export const ScanPay: React.FC<ScanPayProps> = ({ onClose, user, balance: legacyBalance }) => {
     const [step, setStep] = useState<'SCAN' | 'AMOUNT' | 'OFFERS' | 'KFS' | 'PROCESSING' | 'SUCCESS'>('SCAN');
     const [amount, setAmount] = useState('');
     const [selectedOffer, setSelectedOffer] = useState<BankOffer | null>(null);
+    const [cameraError, setCameraError] = useState<string | null>(null);
+    const [retryCount, setRetryCount] = useState(0); // Trigger re-mount of camera effect
     const videoRef = useRef<HTMLVideoElement>(null);
 
+    // Calculate Balance: Use Spend Limit (totalLimit - usedAmount)
+    const currentBalance = user ? (user.totalLimit - user.usedAmount) : (legacyBalance || 0);
+
     useEffect(() => {
+        let stream: MediaStream | null = null;
+
         if (step === 'SCAN') {
+            setCameraError(null);
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                setCameraError("Camera API not supported.");
+                return;
+            }
+
             // Request camera
             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(stream => {
+                .then(mediaStream => {
+                    stream = mediaStream;
                     if (videoRef.current) {
-                        videoRef.current.srcObject = stream;
+                        videoRef.current.srcObject = mediaStream;
                     }
                 })
-                .catch(err => console.error("Camera error:", err));
+                .catch(err => {
+                    console.error("Camera error:", err);
+                    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError' || err.name === 'SecurityError') {
+                        setCameraError("Camera permission denied. Please allow access in settings.");
+                    } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                        setCameraError("No camera found on this device.");
+                    } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+                         setCameraError("Camera is in use by another app.");
+                    } else {
+                        setCameraError("Camera unavailable (" + (err.name || 'Unknown') + ")");
+                    }
+                });
         }
+
         return () => {
             // Cleanup stream
-            if (videoRef.current?.srcObject) {
-                const stream = videoRef.current.srcObject as MediaStream;
+            if (stream) {
                 stream.getTracks().forEach(track => track.stop());
             }
+            if (videoRef.current && videoRef.current.srcObject) {
+                 const currentStream = videoRef.current.srcObject as MediaStream;
+                 currentStream.getTracks().forEach(track => track.stop());
+                 videoRef.current.srcObject = null;
+            }
         };
-    }, [step]);
+    }, [step, retryCount]);
+
+    const handleRetryCamera = () => {
+        setCameraError(null);
+        setRetryCount(prev => prev + 1);
+    };
 
     const handleScanSimulate = () => {
         setStep('AMOUNT');
@@ -129,22 +166,51 @@ export const ScanPay: React.FC<ScanPayProps> = ({ onClose, balance }) => {
 
     const renderScan = () => (
         <div className="fixed inset-0 bg-black z-50 flex flex-col">
-            <div className="flex justify-between items-center p-4 text-white">
-                <span className="font-bold">Scan QR</span>
+            <div className="flex justify-between items-center p-4 text-white bg-black">
+                <span className="font-bold flex items-center gap-2"><ShieldCheck size={18} className="text-green-500"/> Merchant Guard</span>
                 <button onClick={onClose}><X size={24} /></button>
             </div>
+            
+            {/* Merchant Guard Overlay */}
+            <div className="absolute top-14 left-0 right-0 bg-zinc-800/80 p-2 z-20 flex justify-center">
+                 <p className="text-xs text-white text-center">Scanning restricted to Essential Merchant Categories (MCC)</p>
+            </div>
+
             <div className="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
-                <video ref={videoRef} autoPlay playsInline className="absolute inset-0 w-full h-full object-cover opacity-60"></video>
-                {/* Scanner Frame - Sharp */}
-                <div className="relative w-64 h-64 border-4 border-white z-10 flex flex-col items-center justify-center">
-                        <div className="w-60 h-0.5 bg-red-500 absolute top-1/2 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
-                        <p className="text-white text-xs mt-2 bg-black/50 px-2 py-1">Align QR code within frame</p>
-                </div>
+                {!cameraError ? (
+                     <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover opacity-60"></video>
+                ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-500 p-8 text-center bg-zinc-900 z-30">
+                        <div className="w-16 h-16 bg-red-900/20 text-red-500 rounded-full flex items-center justify-center mb-4">
+                            <AlertCircle size={32} />
+                        </div>
+                        <p className="text-white font-bold mb-2 text-lg">Camera Unavailable</p>
+                        <p className="text-sm text-zinc-400 max-w-xs mb-6">{cameraError}</p>
+                        
+                        <div className="flex flex-col gap-3 w-full max-w-xs">
+                            <button 
+                                onClick={handleRetryCamera} 
+                                className="flex items-center justify-center gap-2 px-4 py-2 bg-zinc-800 text-white rounded text-sm hover:bg-zinc-700 transition-colors"
+                            >
+                                <RefreshCw size={16} /> Retry Camera
+                            </button>
+                            <p className="text-xs text-zinc-500 mt-2">Or continue with simulation</p>
+                        </div>
+                    </div>
+                )}
+                
+                {/* Scanner Frame - Hide if error */}
+                {!cameraError && (
+                    <div className="relative w-64 h-64 border-4 border-white z-10 flex flex-col items-center justify-center">
+                            <div className="w-60 h-0.5 bg-red-500 absolute top-1/2 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
+                            <p className="text-white text-xs mt-2 bg-black/50 px-2 py-1">Align QR code within frame</p>
+                    </div>
+                )}
             </div>
             <div className="p-6 bg-white">
                 <div className="flex items-center justify-between mb-4">
-                    <span className="text-zinc-500 text-sm">Available Limit</span>
-                    <span className="font-bold text-zinc-800">₹{balance}</span>
+                    <span className="text-zinc-500 text-sm">Available Spend Limit</span>
+                    <span className="font-bold text-zinc-800">₹{currentBalance}</span>
                 </div>
                 <Button fullWidth onClick={handleScanSimulate}>Simulate Scan Success</Button>
             </div>
@@ -162,7 +228,10 @@ export const ScanPay: React.FC<ScanPayProps> = ({ onClose, balance }) => {
                         </div>
                         <h2 className="text-xl font-bold text-zinc-800">Manoj Kirana Store</h2>
                         <p className="text-zinc-500 text-sm">rajesh@upi</p>
-                        <span className="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 font-bold uppercase mt-2">Verified Merchant</span>
+                        <div className="flex gap-2 mt-2">
+                             <span className="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 font-bold uppercase">Verified Merchant</span>
+                             <span className="bg-blue-100 text-blue-800 text-[10px] px-2 py-0.5 font-bold uppercase">Groceries (MCC 5411)</span>
+                        </div>
                     </div>
 
                     <div className="mb-6">
@@ -181,11 +250,11 @@ export const ScanPay: React.FC<ScanPayProps> = ({ onClose, balance }) => {
                     </div>
 
                     <div className="bg-blue-50 p-3 mb-6 flex justify-between items-center border border-blue-100">
-                        <span className="text-xs text-blue-800 font-medium">Available Limit: ₹{balance}</span>
-                        {Number(amount) > balance && <span className="text-xs text-red-600 font-bold">Insufficient Limit</span>}
+                        <span className="text-xs text-blue-800 font-medium">Available Spend Limit: ₹{currentBalance}</span>
+                        {Number(amount) > currentBalance && <span className="text-xs text-red-600 font-bold">Insufficient Limit</span>}
                     </div>
 
-                    <Button fullWidth onClick={handleCheckOffers} disabled={!amount || Number(amount) > balance || Number(amount) <= 0}>
+                    <Button fullWidth onClick={handleCheckOffers} disabled={!amount || Number(amount) > currentBalance || Number(amount) <= 0}>
                         Check Repayment Plans
                     </Button>
             </div>

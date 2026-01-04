@@ -56,47 +56,57 @@ const RECHARGE_PROVIDERS = [
   }
 ];
 
-const HERO_SLIDES = [
+interface HeroSlide {
+  id: number;
+  iframeUrl?: string;
+  video?: string;
+  image: string;
+  headline: string;
+  subtext: string;
+  fallbackColor: string;
+}
+
+const HERO_SLIDES: HeroSlide[] = [
   {
     id: 0,
-    // Intro - Busy Delhi Market Scene (Simulated High-Res)
-    // Depicting market activity, fuel stations, deliveries etc.
-    // Updated to raw.githubusercontent.com for reliable video streaming
-    video: 'https://raw.githubusercontent.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/main/busy%20bazar.mp4',
+    // Intro - Main Hero Video
+    // Switched to iframeUrl for reliable Google Drive rendering
+    iframeUrl: 'https://drive.google.com/file/d/1cniFYKmM08eJZmO_FxTOq1XS5WhzUjX9/preview',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=1920', // Fallback
     headline: "EC1000 Duo",
     subtext: "RBI inspired LSP, Turning Micro-Access into Macro-Momentum for Viksit Bharat 2047.",
     fallbackColor: "bg-zinc-900"
   },
   {
     id: 1,
-    // Scenario: Auto Rickshaw / Fuel - UPDATED
-    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/fuels.jpg?raw=true',
-    headline: "EC Spend",
-    subtext: "Get Instant fuel credit for viksit barath Rukna Mat Don't Stop",
-    fallbackColor: "bg-zinc-900"
-  },
-  {
-    id: 2,
-    // Scenario: Mobile/Data - Moved UP
-    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/data%20and%20entertainment.jpg?raw=true',
+    // Scenario: Mobile/Data
+    image: 'https://lh3.googleusercontent.com/d/1pC4kqgYrvG-NwVsNGiHlgrDitKh8RUKD',
     headline: "Data & Entertainment",
     subtext: "Recharge Data, DTH, OTT platforms for higher value packs. Repay in weekly or bi-weekly smaller amounts.",
     fallbackColor: "bg-zinc-900"
   },
   {
+    id: 2,
+    // Scenario: Auto Rickshaw / Fuel
+    image: 'https://lh3.googleusercontent.com/d/1JAjVRkj-o4t3eY1g5YYpKPWTKN1JC7v7',
+    headline: "EC Spend",
+    subtext: "Get Instant fuel credit for viksit barath Rukna Mat Don't Stop",
+    fallbackColor: "bg-zinc-900"
+  },
+  {
     id: 3,
-    // Scenario: Delivery Partner - Moved
-    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/delivery%20partners.jpg?raw=true', 
-    headline: "Deliver More, Earn More",
-    subtext: "Fuel more, Earn More. Supports Blinkit, Zomato, Swiggy, big basket, Zepto partners.",
+    // Scenario: Delivery / Maintenance
+    image: 'https://lh3.googleusercontent.com/d/1cKpK3knErsmgAnslSDtIXYv_zt5-AUl_',
+    headline: "Rider Support",
+    subtext: "Bike maintenance, tyres, or repairs. Instant credit for delivery partners. Rukna Mat.",
     fallbackColor: "bg-zinc-900"
   },
   {
     id: 4,
-    // Scenario: EC Cash - Moved Last
-    image: 'https://github.com/Ni-Lambda/EC1000-Duo-Rukna-Mat/blob/main/household.jpg?raw=true',
+    // Scenario: EC Cash (Moved to Last)
+    image: 'https://lh3.googleusercontent.com/d/1EhY1pYeT-uaPKPfohTitG9-DE6ywzw3d',
     headline: "EC Cash",
-    subtext: "Get instant ₹1000 credited to your bank account.",
+    subtext: "Need urgent funds? Transfer directly to your bank account instantly.",
     fallbackColor: "bg-zinc-900"
   }
 ];
@@ -396,7 +406,9 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
 export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeOverlay, setActiveOverlay] = useState<string | null>(null); // 'menu', 'recharge', or page keys
+  const [videoError, setVideoError] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const { theme, toggleTheme } = useTheme();
 
   // Inline Onboarding State
@@ -419,6 +431,34 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  // Force video autoplay on mount and handle mute
+  useEffect(() => {
+    if (currentSlide === 0 && !videoError && videoRef.current) {
+        // Attempt to play
+        const attemptPlay = async () => {
+             try {
+                 videoRef.current!.muted = true;
+                 await videoRef.current!.play();
+             } catch (e) {
+                 console.warn("Autoplay failed", e);
+                 // If autoplay fails, we can fall back to the image to avoid stuck loading state
+                 setVideoError(true);
+             }
+        };
+
+        // Fallback timeout: if video doesn't play within 3s, show image
+        const timeout = setTimeout(() => {
+            if (videoRef.current && (videoRef.current.networkState === 3 || videoRef.current.readyState === 0)) {
+               setVideoError(true); 
+            }
+        }, 3000); 
+
+        attemptPlay();
+
+        return () => clearTimeout(timeout);
+    }
+  }, [currentSlide, videoError]);
 
   const openOverlay = (name: string) => {
       setActiveOverlay(name);
@@ -630,38 +670,54 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
               role="img"
               aria-label={slide.headline}
             >
-              {/* Conditional Video or Image Background */}
+              {/* Conditional Iframe, Video or Image Background */}
               {/* @ts-ignore */}
-              {slide.video ? (
-                 <video
-                    src={slide.video}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover z-0 rounded-none"
-                 />
+              {slide.iframeUrl ? (
+                  <iframe
+                      src={`${slide.iframeUrl}?autoplay=1&mute=1&controls=0&loop=1`}
+                      className="absolute inset-0 w-[300%] h-full -ml-[100%] md:w-full md:ml-0 object-cover z-0"
+                      allow="autoplay; encrypted-media"
+                      title={slide.headline}
+                      style={{ pointerEvents: 'none' }} // Prevent interaction with Drive UI for background effect
+                  ></iframe>
               ) : (
-                <>
-                    {slide.image && (
-                        <img 
-                            src={slide.image} 
-                            alt={slide.headline}
-                            className={`absolute inset-0 w-full h-full z-0 rounded-none object-cover`}
-                            referrerPolicy="no-referrer"
-                        />
-                    )}
-                </>
+                /* @ts-ignore */
+                slide.video && !videoError ? (
+                   <video
+                      ref={slide.id === 0 ? videoRef : null}
+                      key={slide.video}
+                      poster={slide.image} // Fallback image shown while loading
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover z-0 rounded-none"
+                      onError={() => setVideoError(true)}
+                   >
+                      <source src={slide.video} />
+                   </video>
+                ) : (
+                  <>
+                      {slide.image && (
+                          <img 
+                              src={slide.image} 
+                              alt={slide.headline}
+                              className={`absolute inset-0 w-full h-full z-0 rounded-none object-cover`}
+                              referrerPolicy="no-referrer"
+                          />
+                      )}
+                  </>
+                )
               )}
 
-              {/* Gradient Overlay - Subtle Top Gradient to clear text, no bottom fade */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent z-10 pointer-events-none"></div>
+              {/* Gradient Overlay - Darkened top AND bottom for better text readability on white text */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 z-10 pointer-events-none"></div>
               
               {/* Text Content - Layout Restructured */}
               
               {/* Subtext - Extreme Top Left - Minimal Padding */}
               <div className="absolute top-0 left-0 z-20 px-4 pt-4 md:px-6 md:pt-8 max-w-2xl pointer-events-none text-left">
-                <p className={`text-2xl md:text-4xl font-bold tracking-wide leading-tight shadow-sm drop-shadow-md ${slide.id === 2 ? 'text-black' : 'text-white'}`}>
+                <p className={`text-2xl md:text-4xl font-bold tracking-wide leading-tight shadow-sm drop-shadow-md text-white`}>
                     {slide.subtext}
                 </p>
               </div>
@@ -669,7 +725,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
               {/* Headline and Button - Extreme Bottom Right - Inline Stack with Faded Line */}
               <div className="absolute bottom-0 right-0 z-30 flex flex-row items-center gap-6 pointer-events-none justify-end w-full max-w-full px-4 pb-4 md:px-6 md:pb-6">
                   {/* Headline - Inline with CTA */}
-                  <h1 className={`text-2xl md:text-6xl font-extrabold leading-none tracking-tight shadow-sm drop-shadow-md text-right ${slide.id === 2 ? 'text-black' : 'text-white'}`}>
+                  <h1 className={`text-2xl md:text-6xl font-extrabold leading-none tracking-tight shadow-sm drop-shadow-md text-right text-white`}>
                     {slide.headline.split('Duo').map((part, i, arr) => (
                         <React.Fragment key={i}>
                             {part}
@@ -685,7 +741,7 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
                   <div className="pointer-events-auto shrink-0">
                       <Button 
                         onClick={() => {
-                           if (slide.id === 2) { // Data & Entertainment Slide
+                           if (slide.id === 1) { // Data & Entertainment Slide
                               openOverlay('recharge');
                            } else {
                               document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' });
@@ -694,10 +750,10 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
                         className={`bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl font-bold tracking-wide border-none px-6 py-4 md:px-8 md:py-5 text-base md:text-lg transition-transform hover:scale-105 flex items-center gap-2 rounded-none`}
                       >
                         {slide.id === 0 && "Explore Now"}
-                        {slide.id === 1 && "Fuel Now"}
-                        {slide.id === 2 && "Recharge Now"}
-                        {slide.id === 3 && "Earn Now"}
-                        {slide.id === 4 && "Get Now"}
+                        {slide.id === 1 && "Recharge Now"}
+                        {slide.id === 2 && "Fuel Now"}
+                        {slide.id === 3 && "Fix Now"}
+                        {slide.id === 4 && "Get Cash"}
                       </Button>
                   </div>
               </div>

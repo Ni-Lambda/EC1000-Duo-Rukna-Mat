@@ -29,6 +29,12 @@ function AppContent() {
     if (savedUser) {
         try {
             const parsedUser = JSON.parse(savedUser);
+            // Migrations for old schema to new schema
+            if (!parsedUser.cashLimit) parsedUser.cashLimit = 1000;
+            if (typeof parsedUser.cashUsed === 'undefined') parsedUser.cashUsed = 0;
+            if (!parsedUser.creditLevel) parsedUser.creditLevel = 1;
+            if (!parsedUser.ecScore) parsedUser.ecScore = 650;
+            
             setUser(parsedUser);
             // If user has a PIN, require Quick Login
             if (parsedUser.pin) {
@@ -111,6 +117,24 @@ function AppContent() {
     window.history.pushState({ stage: stage, tab: tab }, '');
   };
 
+  // Upgrades user after repayment: Increases Cumulative Spend Limit by 1000
+  const handleRepaymentSuccess = () => {
+      if (user) {
+          const updatedUser: UserState = {
+              ...user,
+              creditLevel: user.creditLevel + 1,
+              // Unlock additional 1000 cumulative limit across spend categories
+              totalLimit: user.totalLimit + 1000,
+              usedAmount: 0, // Clear spend dues
+              cashUsed: 0,   // Clear cash dues (if any)
+              ecScore: Math.min(900, user.ecScore + 50)
+          };
+          setUser(updatedUser);
+          localStorage.setItem('ec1000_user', JSON.stringify(updatedUser));
+          handleNavigate('home');
+      }
+  };
+
   const closeScan = () => {
       setIsScanOpen(false);
       // If closing manually, we go back to remove the modal state from history
@@ -137,14 +161,14 @@ function AppContent() {
     <>
       <Layout activeTab={activeTab} onTabChange={handleNavigate}>
         {activeTab === 'home' && <Home user={user} onNavigate={handleNavigate} />}
-        {activeTab === 'spend' && <ECSpend onNavigate={handleNavigate} initialCategory={spendContext?.categoryId} />}
-        {activeTab === 'repayments' && <Repayments />}
+        {activeTab === 'spend' && <ECSpend user={user} onNavigate={handleNavigate} initialCategory={spendContext?.categoryId} />}
+        {activeTab === 'repayments' && <Repayments onRepaySuccess={handleRepaymentSuccess} />}
         {activeTab === 'history' && <History />}
         {activeTab === 'profile' && <Profile user={user} onLogout={handleLogout} />}
       </Layout>
       
       {/* Modals/Overlays */}
-      {isScanOpen && <ScanPay onClose={closeScan} balance={user.balance} />}
+      {isScanOpen && <ScanPay onClose={closeScan} user={user} />}
     </>
   );
 }

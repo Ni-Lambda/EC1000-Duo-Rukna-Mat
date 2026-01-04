@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { SPEND_CATEGORIES, SpendCategoryType, RepaymentPlan } from '../types';
+import { SPEND_CATEGORIES, SpendCategoryType, RepaymentPlan, UserState } from '../types';
 import { Button } from '../components/Button';
 import * as Icons from 'lucide-react';
 
 interface ECSpendProps {
   onNavigate: (page: string) => void;
   initialCategory?: number;
+  user: UserState;
 }
 
 // Real Bank Logos and Base Rates for sorting
@@ -40,39 +41,39 @@ const BANKS = [
   }
 ];
 
+const EC_CASH_USE_CASES = [
+  { id: 1, label: '₹1000 Cash', src: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=400' },
+  { id: 2, label: 'Partner Support', src: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=400' },
+  { id: 3, label: 'Fuel Refill', src: 'https://images.unsplash.com/photo-1626847037657-fd3622613ce3?auto=format&fit=crop&q=80&w=400' },
+  { id: 4, label: 'Daily Grocery', src: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400' },
+  { id: 5, label: 'Mobile Recharge', src: 'https://images.unsplash.com/photo-1512428559087-560fa5ce7d87?auto=format&fit=crop&q=80&w=400' }
+];
+
 const SPEND_HIGHLIGHTS = [
     { 
         id: 'h1', 
         title: 'Fuel on the Go', 
-        // Image removed
+        image: 'https://images.unsplash.com/photo-1626847037657-fd3622613ce3?auto=format&fit=crop&q=80&w=800',
         desc: 'Pay at any petrol pump' 
     },
     { 
         id: 'h2', 
         title: 'Weekly Groceries', 
-        // Image removed
+        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800',
         desc: 'Fresh veggies & staples' 
     },
     { 
         id: 'h3', 
         title: 'Pharmacy Needs', 
-        // Image removed
+        image: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&q=80&w=800',
         desc: 'Medicines & healthcare' 
     },
     { 
         id: 'h4', 
         title: 'Utility Bills', 
-        // Image removed
+        image: 'https://images.unsplash.com/photo-1634733988138-bf2c3a2a13fa?auto=format&fit=crop&q=80&w=800',
         desc: 'Electricity, Water, Gas' 
     },
-];
-
-const EC_CASH_USE_CASES = [
-  { id: 1, label: '₹1000 Cash' },
-  { id: 2, label: 'Partner Support' },
-  { id: 3, label: 'Fuel Refill' },
-  { id: 4, label: 'Daily Grocery' },
-  { id: 5, label: 'Mobile Recharge' }
 ];
 
 interface BankOffer {
@@ -83,7 +84,7 @@ interface BankOffer {
     plan: RepaymentPlan;
 }
 
-export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory }) => {
+export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory, user }) => {
   // Navigation State
   const [rootView, setRootView] = useState<'SELECTION' | 'SPEND_LIST'>('SELECTION');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -267,6 +268,12 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
                       </div>
                       <h3 className="text-2xl font-bold mb-2">EC Cash</h3>
                       <p className="text-zinc-400 mb-6 max-w-[80%]">Transfer funds directly to your bank account instantly.</p>
+                      
+                      <div className="bg-zinc-800/50 p-3 mb-4 border border-zinc-700 w-fit">
+                          <p className="text-xs text-zinc-400 uppercase">Cash Limit</p>
+                          <p className="text-lg font-bold text-green-400">₹{user.cashLimit}</p>
+                      </div>
+
                       <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 text-sm font-bold uppercase tracking-wider flex items-center gap-2">
                           Get Cash <Icons.ArrowRight size={16} />
                       </button>
@@ -287,6 +294,12 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
                       </div>
                       <h3 className="text-2xl font-bold text-zinc-800 dark:text-white mb-2">EC Spend</h3>
                       <p className="text-zinc-500 dark:text-zinc-400 mb-6 max-w-[80%]">Use limit for groceries, fuel, bills, and merchant payments.</p>
+                      
+                      <div className="bg-zinc-50 dark:bg-zinc-800 p-3 mb-4 border border-zinc-200 dark:border-zinc-700 w-fit">
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase">Cumulative Spend Limit</p>
+                          <p className="text-lg font-bold text-blue-600 dark:text-blue-400">₹{user.totalLimit}</p>
+                      </div>
+
                       <button className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-6 py-2 text-sm font-bold uppercase tracking-wider flex items-center gap-2">
                           Explore Categories <Icons.ArrowRight size={16} />
                       </button>
@@ -296,7 +309,8 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
       </div>
   );
 
-  const renderSpendList = () => (
+  const renderSpendList = () => {
+    return (
     <div className="pb-20 animate-fade-in">
         <div className="flex items-center space-x-2 mb-6 text-zinc-500 dark:text-zinc-400 cursor-pointer" onClick={() => setRootView('SELECTION')}>
             <Icons.ArrowLeft size={20} />
@@ -329,7 +343,11 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
         </div>
 
         {/* Filtered Grid (Exclude EC Cash) */}
-        <h3 className="text-lg font-bold text-zinc-800 dark:text-white mb-3 px-1">Spend Categories</h3>
+        <div className="flex justify-between items-center mb-3 px-1">
+            <h3 className="text-lg font-bold text-zinc-800 dark:text-white">Spend Categories</h3>
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Shared Limit</span>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {SPEND_CATEGORIES.filter(c => c.type !== SpendCategoryType.EC_CASH).map((cat) => {
                 // @ts-ignore
@@ -338,18 +356,14 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
                     <button 
                         key={cat.id}
                         onClick={() => handleCategorySelect(cat.id)}
-                        className={`p-6 hover:bg-zinc-50 dark:hover:bg-zinc-800 border-l-4 border-transparent hover:border-blue-600 flex items-center space-x-4 transition-all shadow-sm bg-white dark:bg-zinc-900`}
+                        className={`p-6 hover:bg-zinc-50 dark:hover:bg-zinc-800 border-l-4 border-transparent hover:border-blue-600 flex items-center space-x-4 transition-all shadow-sm bg-white dark:bg-zinc-900 relative`}
                     >
                         <div className={`w-12 h-12 flex items-center justify-center rounded-none ${cat.isAppOnly ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'}`}>
                             <Icon size={24} />
                         </div>
                         <div className="text-left flex-1">
                             <h3 className="font-bold text-zinc-800 dark:text-zinc-200">{cat.type}</h3>
-                            {cat.isAppOnly ? (
-                                <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">In-App Payment</span>
-                            ) : (
-                                <span className="text-xs text-zinc-400">Scan or Enter Amount</span>
-                            )}
+                            <span className="text-xs text-zinc-400 mt-1">Uses Shared Spend Limit</span>
                         </div>
                         <Icons.ChevronRight className="text-zinc-300 dark:text-zinc-600" />
                     </button>
@@ -357,7 +371,7 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
             })}
         </div>
     </div>
-  );
+  )};
 
   const renderDetails = () => {
     const cat = SPEND_CATEGORIES.find(c => c.id === selectedCategory);
@@ -365,7 +379,69 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
     // @ts-ignore
     const Icon = Icons[cat.icon];
     const isECCash = cat.type === SpendCategoryType.EC_CASH;
+    const isScanCategory = !cat.isAppOnly; // Categories that require physical presence (Scan & Pay)
 
+    // Calculate Available Limit based on Context (Cash vs Spend)
+    const availableLimit = isECCash 
+        ? (user.cashLimit - user.cashUsed) 
+        : (user.totalLimit - user.usedAmount);
+
+    const limitLabel = isECCash ? 'Cash Limit' : 'Cumulative Spend Limit';
+
+    // 1. Redirect for Physical Scan Categories (Fuel, Grocery, Pharma)
+    if (isScanCategory) {
+        return (
+            <div className="max-w-md mx-auto bg-white dark:bg-zinc-900 p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm pb-32 animate-slide-in-right">
+                 <div className="flex items-center space-x-2 mb-6 text-zinc-500 dark:text-zinc-400 cursor-pointer" onClick={handleBack}>
+                    <Icons.ArrowLeft size={20} />
+                    <span className="text-sm font-medium">Back</span>
+                </div>
+
+                <div className="flex flex-col items-center mb-8 text-center">
+                    <div className={`w-20 h-20 flex items-center justify-center mb-4 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400`}>
+                        <Icon size={40} />
+                    </div>
+                    <h2 className="text-2xl font-bold text-zinc-800 dark:text-white mb-2">{cat.type}</h2>
+                    <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full">
+                        <Icons.MapPin size={14} className="text-zinc-500" />
+                        <span className="text-xs font-medium text-zinc-600 dark:text-zinc-300">In-Store Payment</span>
+                    </div>
+                </div>
+
+                <div className="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 p-6 text-center space-y-4 rounded-xl">
+                     <div className="w-16 h-16 bg-white dark:bg-zinc-900 rounded-lg flex items-center justify-center mx-auto shadow-sm border border-zinc-100 dark:border-zinc-800">
+                         <Icons.QrCode size={32} className="text-zinc-800 dark:text-white" />
+                     </div>
+                     
+                     <div>
+                         <h3 className="font-bold text-zinc-900 dark:text-white">Scan Merchant QR</h3>
+                         <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
+                             Visit any authorized {cat.type} outlet and scan their UPI QR code to pay using your EC Limit.
+                         </p>
+                     </div>
+
+                     <div className="pt-2">
+                         <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-1">Available Spend Limit</p>
+                         <p className="text-xl font-bold text-blue-600 dark:text-blue-400">₹{availableLimit}</p>
+                     </div>
+                     
+                     <Button fullWidth onClick={() => onNavigate('scan')} className="shadow-lg">
+                         <Icons.ScanLine size={18} className="mr-2" />
+                         Open Scanner
+                     </Button>
+                </div>
+
+                <div className="mt-6 flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-lg">
+                    <Icons.Info size={18} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                    <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+                        <strong>Note:</strong> Transaction will be approved only if the Merchant Category Code (MCC) matches {cat.type}.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    // 2. App-based Flows (EC Cash, Bills, Recharge)
     return (
         <div className="max-w-md mx-auto bg-white dark:bg-zinc-900 p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm pb-32 animate-slide-in-right">
             <div className="flex items-center space-x-2 mb-6 text-zinc-500 dark:text-zinc-400 cursor-pointer" onClick={handleBack}>
@@ -386,34 +462,20 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
             <div className="space-y-4">
                 {isECCash ? (
                     <>
-                        <div className="mb-6">
-                            <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wide mb-3">Popular Use Cases</h3>
-                            <div className="flex overflow-x-auto space-x-3 pb-4 scrollbar-hide snap-x -mx-2 px-2">
-                                {EC_CASH_USE_CASES.map((item) => (
-                                    <div key={item.id} className="flex-none w-32 snap-start group relative border border-zinc-200 dark:border-zinc-700 shadow-sm">
-                                        <div className="aspect-[4/3] bg-zinc-100 dark:bg-zinc-800">
-                                            {/* @ts-ignore */}
-                                            {item.src && (
-                                                <img 
-                                                    // @ts-ignore
-                                                    src={item.src} 
-                                                    alt={item.label} 
-                                                    referrerPolicy="no-referrer"
-                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                />
-                                            )}
-                                        </div>
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-2">
-                                            <span className="text-white text-[10px] font-bold leading-tight">{item.label}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                        {/* RBI GUARD RAIL WARNING */}
+                        <div className="bg-red-50 dark:bg-red-900/20 p-4 border-l-4 border-red-500 mb-6">
+                            <h4 className="flex items-center text-red-700 dark:text-red-400 font-bold text-sm mb-1">
+                                <Icons.ShieldAlert size={16} className="mr-2" />
+                                P2P Transfers Restricted
+                            </h4>
+                            <p className="text-xs text-red-600 dark:text-red-300 leading-relaxed">
+                                As per RBI guidelines, funds can ONLY be transferred to your own KYC-verified bank account. Transferring to friends/family is blocked.
+                            </p>
                         </div>
 
                         <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 border border-zinc-200 dark:border-zinc-700 mb-4">
                              <div className="flex justify-between items-center mb-2">
-                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase font-bold">Transfer To</p>
+                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase font-bold">Transfer To (Self)</p>
                                  <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] px-2 py-0.5 font-bold uppercase">Verified</span>
                              </div>
                              <div className="flex items-center space-x-3">
@@ -421,14 +483,15 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
                                     <Icons.Building2 size={20} className="text-zinc-700 dark:text-zinc-300" />
                                  </div>
                                  <div>
-                                     <p className="font-bold text-zinc-800 dark:text-white">HDFC Bank</p>
-                                     <p className="text-xs text-zinc-500 dark:text-zinc-400">A/c •••• 4590 | IFSC HDFC00012</p>
+                                     <p className="font-bold text-zinc-800 dark:text-white">HDFC Bank (Primary)</p>
+                                     <p className="text-xs text-zinc-500 dark:text-zinc-400">A/c •••• 4590 | {user.name}</p>
                                  </div>
                              </div>
                         </div>
                     </>
                 ) : null}
 
+                {/* Specific Inputs for Recharge/Bills */}
                 {cat.isAppOnly && !isECCash && (
                     <>
                         <div>
@@ -462,25 +525,27 @@ export const ECSpend: React.FC<ECSpendProps> = ({ onNavigate, initialCategory })
                         <input 
                             type="number"
                             value={amount}
-                            readOnly={isECCash}
+                            readOnly={isECCash} // EC Cash is often fixed or pre-selected blocks
                             onChange={(e) => setAmount(e.target.value)}
-                            className={`w-full p-4 text-2xl font-bold border-b-2 outline-none text-black dark:text-white ${isECCash ? 'bg-zinc-100 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 cursor-not-allowed' : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 focus:border-blue-600 dark:focus:border-blue-500'}`}
+                            className={`w-full p-4 text-2xl font-bold border-b-2 outline-none text-black dark:text-white ${isECCash ? 'bg-zinc-100 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400' : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 focus:border-blue-600 dark:focus:border-blue-500'}`}
                             placeholder="0"
                         />
-                        {isECCash && (
-                             <div className="mt-2 text-center">
-                                 <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                                     Repay in time to unlock more.
-                                 </p>
-                             </div>
-                        )}
+                        {/* Dynamic Limit Message */}
+                         <div className="mt-2 text-center flex justify-between items-center px-1">
+                             <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                                 Available {limitLabel}: <span className="font-bold text-zinc-800 dark:text-white">₹{availableLimit}</span>
+                             </p>
+                             {isECCash && (
+                                <span className="text-[10px] text-green-600 dark:text-green-400 font-bold uppercase">Separate Line</span>
+                             )}
+                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="mt-8">
-                <Button fullWidth onClick={() => setStep('OFFERS')} disabled={!amount || Number(amount) < 1}>
-                    View Bank Offers
+                <Button fullWidth onClick={() => setStep('OFFERS')} disabled={!amount || Number(amount) < 1 || Number(amount) > availableLimit}>
+                    {Number(amount) > availableLimit ? 'Limit Exceeded' : 'View Bank Offers'}
                 </Button>
             </div>
         </div>
