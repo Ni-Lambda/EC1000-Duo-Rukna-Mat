@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { OnboardingStep, UserState } from '../types';
 import { Button } from '../components/Button';
-import { ShieldCheck, CheckCircle, Upload, Camera, Loader2, AlertCircle, Lock, Fingerprint, IndianRupee } from 'lucide-react';
+import { ShieldCheck, CheckCircle, Upload, Camera, Loader2, AlertCircle, Lock, Fingerprint, IndianRupee, Database, Server, Zap, Scale, Briefcase } from 'lucide-react';
 
 interface OnboardingProps {
   initialPhone?: string;
@@ -9,11 +9,16 @@ interface OnboardingProps {
 }
 
 export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone }) => {
-  // If phone is passed, we skip PHONE_ENTRY and go straight to DETAILS
+  // If phone is passed, we skip PHONE_ENTRY and go straight to CONSENT (was DETAILS)
   const [step, setStep] = useState<OnboardingStep>(
-      initialPhone ? OnboardingStep.DETAILS : OnboardingStep.PHONE_ENTRY
+      initialPhone ? OnboardingStep.CONSENT : OnboardingStep.PHONE_ENTRY
   );
   const [isLoading, setIsLoading] = useState(false);
+  
+  // RBIH PTPFC Simulation State
+  const [isFrictionlessFetch, setIsFrictionlessFetch] = useState(false);
+  const [fetchProgress, setFetchProgress] = useState(0);
+  const [fetchLogs, setFetchLogs] = useState<string[]>([]);
   
   // Form State
   const [phone, setPhone] = useState(initialPhone || '');
@@ -23,16 +28,58 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
   const [aadhaar, setAadhaar] = useState('');
   const [pan, setPan] = useState('');
   const [email, setEmail] = useState('');
+  const [incomeRange, setIncomeRange] = useState<'BELOW_3L' | 'ABOVE_3L' | null>(null);
   const [consentGiven, setConsentGiven] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   
+  // Start Frictionless Data Fetch Simulation
+  const startFrictionlessFetch = () => {
+      setIsFrictionlessFetch(true);
+      setFetchProgress(0);
+      setFetchLogs(['Initializing PTPFC Handshake...']);
+
+      const milestones = [
+          { p: 20, log: 'Connected to RBI Innovation Hub Node...' },
+          { p: 40, log: 'Verifying Mobile via Tuples...' },
+          { p: 60, log: 'Fetching Masked Aadhaar (UIDAI)...' },
+          { p: 80, log: 'Validating PAN (NSDL)...' },
+          { p: 100, log: 'Data Received Successfully.' }
+      ];
+
+      let current = 0;
+      const interval = setInterval(() => {
+          if (current >= milestones.length) {
+              clearInterval(interval);
+              setTimeout(() => {
+                  setIsFrictionlessFetch(false);
+                  // Auto-fill Data
+                  setName('Rajesh Kumar');
+                  setAadhaar('xxxx xxxx 4590');
+                  setPan('ABCDE1234F');
+                  setEmail('rajesh.kumar@email.com');
+              }, 800);
+              return;
+          }
+          
+          const m = milestones[current];
+          setFetchProgress(m.p);
+          setFetchLogs(prev => [...prev, m.log]);
+          current++;
+      }, 800);
+  };
+
   // Validation & Navigation Handler
   const handleNext = async () => {
     setErrors({}); // Clear previous errors
     let isValid = true;
     const newErrors: {[key: string]: string} = {};
 
-    if (step === OnboardingStep.DETAILS) {
+    if (step === OnboardingStep.CONSENT) {
+        if (!consentGiven) {
+            newErrors.consent = "Please authorize to proceed.";
+            isValid = false;
+        }
+    } else if (step === OnboardingStep.DETAILS) {
         // Combined Validation
         if (name.trim().length < 3) {
             newErrors.name = "Enter full name as per PAN.";
@@ -40,7 +87,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
         }
         // Validate Aadhaar (strip spaces first)
         const cleanAadhaar = aadhaar.replace(/\s/g, '');
-        if (!/^\d{12}$/.test(cleanAadhaar)) {
+        // Allow masked aadhaar for simulation or full 12 digits
+        if (!/^\d{12}$/.test(cleanAadhaar) && !cleanAadhaar.includes('x')) {
             newErrors.aadhaar = "Aadhaar must be 12 digits.";
             isValid = false;
         }
@@ -52,9 +100,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
             newErrors.email = "Invalid email.";
             isValid = false;
         }
-    } else if (step === OnboardingStep.CONSENT) {
-        if (!consentGiven) {
-            newErrors.consent = "Please authorize to proceed.";
+    } else if (step === OnboardingStep.ECONOMIC_PROFILE) {
+        if (!incomeRange) {
+            newErrors.income = "Please select an income range.";
             isValid = false;
         }
     } else if (step === OnboardingStep.SECURITY) {
@@ -73,9 +121,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
     // Simulate network delay
     setTimeout(() => {
       setIsLoading(false);
-      if (step === OnboardingStep.DETAILS) {
+      // Flow Transition
+      if (step === OnboardingStep.PHONE_ENTRY) {
           setStep(OnboardingStep.CONSENT);
       } else if (step === OnboardingStep.CONSENT) {
+          setStep(OnboardingStep.DETAILS);
+      } else if (step === OnboardingStep.DETAILS) {
+          setStep(OnboardingStep.ECONOMIC_PROFILE);
+      } else if (step === OnboardingStep.ECONOMIC_PROFILE) {
           setStep(OnboardingStep.SECURITY);
       } else if (step === OnboardingStep.SECURITY) {
           handleComplete();
@@ -105,10 +158,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
   const renderProgress = () => {
     const currentProgressIdx = 
         step === OnboardingStep.PHONE_ENTRY ? 0 :
-        step === OnboardingStep.DETAILS ? 1 :
-        step === OnboardingStep.CONSENT ? 2 : 3;
+        step === OnboardingStep.CONSENT ? 1 :
+        step === OnboardingStep.DETAILS ? 2 :
+        step === OnboardingStep.ECONOMIC_PROFILE ? 3 : 4;
     
-    const totalSteps = 4;
+    const totalSteps = 5;
     const progress = ((currentProgressIdx + 1) / totalSteps) * 100;
     
     return (
@@ -128,18 +182,128 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
                         <p className="text-zinc-600 mt-2">Enter mobile number to begin.</p>
                     </div>
                     {/* Simplified for fallback if accessed directly without landing */}
-                    <Button fullWidth onClick={() => setStep(OnboardingStep.DETAILS)} size="lg">Continue</Button>
+                    <Button fullWidth onClick={() => setStep(OnboardingStep.CONSENT)} size="lg">Continue</Button>
                 </div>
             );
+
+        case OnboardingStep.CONSENT:
+             return (
+                 <div className="space-y-6">
+                     <div className="text-center mb-6">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
+                            <Scale size={32} />
+                        </div>
+                        <h2 className="text-2xl font-extrabold text-zinc-800 tracking-tight">Authorizations</h2>
+                        <p className="text-zinc-600 text-sm mt-1">Regulatory Declarations</p>
+                    </div>
+
+                    <div className="bg-zinc-50 border border-zinc-200 p-4 rounded-none space-y-3">
+                        <div className="flex items-start gap-2">
+                             <ShieldCheck className="shrink-0 text-emerald-600 mt-0.5" size={16} />
+                             <p className="text-xs text-zinc-600 leading-relaxed">
+                                 <strong>LSP Declaration:</strong> I understand that <strong>EC1000 Duo</strong> is a Lending Service Provider (LSP) acting on behalf of <strong>SafeLend NBFC</strong> (Regulated Entity).
+                             </p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                             <Briefcase className="shrink-0 text-emerald-600 mt-0.5" size={16} />
+                             <p className="text-xs text-zinc-600 leading-relaxed">
+                                 <strong>Fund Flow:</strong> All loan disbursements will be made directly from SafeLend NBFC's bank account to my account/merchant.
+                             </p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                             <IndianRupee className="shrink-0 text-emerald-600 mt-0.5" size={16} />
+                             <p className="text-xs text-zinc-600 leading-relaxed">
+                                 <strong>Auto-Pay:</strong> I authorize the setup of a UPI Auto-Pay mandate (Max ₹5000) for repayments.
+                             </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-start space-x-3 bg-white p-3 border border-zinc-200">
+                         <input 
+                            type="checkbox" 
+                            id="consent" 
+                            className="w-5 h-5 mt-0.5 rounded-none shrink-0"
+                            checked={consentGiven}
+                            onChange={(e) => {
+                                setConsentGiven(e.target.checked);
+                                if(errors.consent) setErrors({...errors, consent: ''});
+                            }}
+                         />
+                         <label htmlFor="consent" className="text-sm text-zinc-800 font-bold cursor-pointer leading-snug">
+                             I agree to the Terms, Privacy Policy, and authorize EC1000 & SafeLend NBFC to access my credit report.
+                         </label>
+                    </div>
+                    {errors.consent && <p className="text-red-500 text-xs mt-1">{errors.consent}</p>}
+
+                    <div className="pt-4">
+                        <Button fullWidth onClick={handleNext} size="lg" className="bg-blue-600 hover:bg-blue-700">
+                            {isLoading ? <Loader2 className="animate-spin" /> : 'Accept & Continue'}
+                        </Button>
+                    </div>
+                 </div>
+             );
         
-        // Combined Registration Step
+        // Combined Registration Step with PTPFC Simulation
         case OnboardingStep.DETAILS:
+             if (isFrictionlessFetch) {
+                 return (
+                     <div className="space-y-8 text-center py-10">
+                         <div className="relative w-24 h-24 mx-auto mb-6">
+                             <div className="absolute inset-0 border-4 border-zinc-100 rounded-full"></div>
+                             <div className="absolute inset-0 border-4 border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
+                             <div className="absolute inset-0 flex items-center justify-center">
+                                 <Database className="text-emerald-600" size={32} />
+                             </div>
+                         </div>
+                         <div>
+                             <h2 className="text-xl font-bold text-zinc-800 mb-2">Connecting to PTPFC...</h2>
+                             <p className="text-xs text-zinc-400 uppercase tracking-widest font-bold">Public Tech Platform for Frictionless Credit</p>
+                         </div>
+                         
+                         <div className="bg-zinc-900 text-green-400 p-4 font-mono text-xs text-left h-32 overflow-hidden rounded-md border border-zinc-800 shadow-inner">
+                             {fetchLogs.map((log, i) => (
+                                 <p key={i} className="mb-1">> {log}</p>
+                             ))}
+                             <span className="animate-pulse">_</span>
+                         </div>
+                     </div>
+                 )
+             }
+
              return (
                 <div className="space-y-6">
                      <div className="text-center mb-6">
-                        <h2 className="text-2xl font-extrabold text-zinc-800 tracking-tight">Complete Profile</h2>
-                        <p className="text-zinc-600 text-sm mt-1">One-time details for KYC & approval.</p>
+                        <h2 className="text-2xl font-extrabold text-zinc-800 tracking-tight">KYC Details</h2>
+                        <p className="text-zinc-600 text-sm mt-1">Verify your identity to unlock limits.</p>
                     </div>
+
+                    {/* Frictionless Fetch CTA */}
+                    {!name && (
+                        <div 
+                            onClick={startFrictionlessFetch}
+                            className="bg-blue-50 border border-blue-200 p-4 cursor-pointer hover:bg-blue-100 transition-colors group relative overflow-hidden"
+                        >
+                            <div className="flex items-center gap-4 relative z-10">
+                                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-blue-600 shadow-sm border border-blue-100">
+                                    <Zap size={24} fill="currentColor" />
+                                </div>
+                                <div className="text-left flex-1">
+                                    <h3 className="font-bold text-blue-900">Fetch via RBI Innovation Hub</h3>
+                                    <p className="text-xs text-blue-700">Zero typing. Instant verify via PTPFC.</p>
+                                </div>
+                                <div className="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    FAST
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {name && (
+                        <div className="bg-green-50 border border-green-200 p-3 flex items-center gap-2 text-green-800 text-sm font-medium animate-fade-in">
+                            <CheckCircle size={16} />
+                            Data fetched successfully via PTPFC
+                        </div>
+                    )}
 
                     <div className="space-y-4">
                         {/* Name */}
@@ -183,22 +347,16 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
                                     value={aadhaar}
                                     maxLength={14} // 12 digits + 2 spaces
                                     onChange={(e) => {
-                                        // Strip non-digits
-                                        let val = e.target.value.replace(/\D/g, '');
-                                        
-                                        // Limit to 12 digits
-                                        if (val.length > 12) val = val.substring(0, 12);
-                                        
-                                        // Add spaces every 4 characters
-                                        const formatted = val.replace(/(\d{4})(?=\d)/g, '$1 ');
-                                        
-                                        setAadhaar(formatted);
+                                        // Strip non-digits except 'x' for masked
+                                        // Simple logic for manual entry
+                                        let val = e.target.value;
+                                        setAadhaar(val);
                                         if (errors.aadhaar) setErrors({...errors, aadhaar: ''});
                                     }}
                                     className={`w-full p-3 bg-white border-2 outline-none text-black transition-colors ${errors.aadhaar ? 'border-red-500' : 'border-zinc-200 focus:border-emerald-600'}`}
                                     placeholder="0000 0000 0000"
                                 />
-                                {aadhaar.replace(/\s/g, '').length === 12 && <ShieldCheck className="absolute right-3 top-3 text-emerald-600" size={20} />}
+                                {aadhaar.length >= 12 && <ShieldCheck className="absolute right-3 top-3 text-emerald-600" size={20} />}
                             </div>
                             {errors.aadhaar && <p className="text-red-500 text-xs mt-1">{errors.aadhaar}</p>}
                         </div>
@@ -229,54 +387,57 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete, initialPhone
                     
                     <div className="pt-4">
                         <Button fullWidth onClick={handleNext} size="lg" className="bg-emerald-600 hover:bg-emerald-700">
-                            {isLoading ? <Loader2 className="animate-spin" /> : 'Submit & Proceed'}
+                            {isLoading ? <Loader2 className="animate-spin" /> : 'Confirm & Proceed'}
                         </Button>
                     </div>
                 </div>
              );
 
-        case OnboardingStep.CONSENT:
+        case OnboardingStep.ECONOMIC_PROFILE:
              return (
                  <div className="space-y-6">
                      <div className="text-center mb-6">
-                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
-                            <IndianRupee size={32} />
+                        <div className="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-4 text-yellow-600 border border-yellow-100">
+                            <Briefcase size={32} />
                         </div>
-                        <h2 className="text-2xl font-extrabold text-zinc-800 tracking-tight">Enable Auto-Pay</h2>
-                        <p className="text-zinc-600 text-sm mt-1">Never miss a repayment deadline.</p>
+                        <h2 className="text-2xl font-extrabold text-zinc-800 tracking-tight">Economic Profile</h2>
+                        <p className="text-zinc-600 text-sm mt-1">Required for Regulatory Classification</p>
                     </div>
 
-                    <div className="bg-zinc-50 border border-zinc-200 p-6 rounded-none">
-                        <h3 className="font-bold text-zinc-800 mb-2">UPI Auto-Debit Mandate</h3>
-                        <p className="text-sm text-zinc-500 mb-4 leading-relaxed">
-                            I hereby authorize EC1000 <span className="text-emerald-600 font-bold">Duo</span> (via SafeLend NBFC) to debit my linked bank account for repayments as per the schedule chosen during transactions. Max limit: ₹5000.
+                    <div className="space-y-4">
+                        <p className="text-sm font-bold text-zinc-700">What is your Annual Household Income?</p>
+                        <p className="text-xs text-zinc-500 mb-4">
+                            Per RBI Microfinance guidelines, this helps us categorize your loan product.
                         </p>
-                        <div className="flex items-center space-x-2 text-xs text-zinc-400">
-                            <ShieldCheck size={14} />
-                            <span>NPCI Approved Mandate</span>
+                        
+                        <div 
+                            onClick={() => { setIncomeRange('BELOW_3L'); if(errors.income) setErrors({...errors, income: ''}); }}
+                            className={`p-4 border-2 rounded cursor-pointer transition-all ${incomeRange === 'BELOW_3L' ? 'border-emerald-600 bg-emerald-50' : 'border-zinc-200 bg-white hover:border-zinc-300'}`}
+                        >
+                            <div className="flex items-center justify-between">
+                                <span className="font-bold text-zinc-800">Below ₹3 Lakhs</span>
+                                {incomeRange === 'BELOW_3L' && <CheckCircle className="text-emerald-600" size={20} />}
+                            </div>
+                            <p className="text-xs text-zinc-500 mt-1">Eligible for collateral-free Microfinance Loans.</p>
                         </div>
-                    </div>
 
-                    <div className="flex items-start space-x-3">
-                         <input 
-                            type="checkbox" 
-                            id="consent" 
-                            className="w-5 h-5 mt-0.5 rounded-none"
-                            checked={consentGiven}
-                            onChange={(e) => {
-                                setConsentGiven(e.target.checked);
-                                if(errors.consent) setErrors({...errors, consent: ''});
-                            }}
-                         />
-                         <label htmlFor="consent" className="text-sm text-zinc-700 font-medium cursor-pointer">
-                             I agree to the Terms & Conditions and authorize UPI Auto-Debit.
-                         </label>
+                        <div 
+                            onClick={() => { setIncomeRange('ABOVE_3L'); if(errors.income) setErrors({...errors, income: ''}); }}
+                            className={`p-4 border-2 rounded cursor-pointer transition-all ${incomeRange === 'ABOVE_3L' ? 'border-blue-600 bg-blue-50' : 'border-zinc-200 bg-white hover:border-zinc-300'}`}
+                        >
+                            <div className="flex items-center justify-between">
+                                <span className="font-bold text-zinc-800">Above ₹3 Lakhs</span>
+                                {incomeRange === 'ABOVE_3L' && <CheckCircle className="text-blue-600" size={20} />}
+                            </div>
+                            <p className="text-xs text-zinc-500 mt-1">Eligible for Standard Personal Loans.</p>
+                        </div>
+                        
+                        {errors.income && <p className="text-red-500 text-xs">{errors.income}</p>}
                     </div>
-                    {errors.consent && <p className="text-red-500 text-xs mt-1">{errors.consent}</p>}
 
                     <div className="pt-4">
-                        <Button fullWidth onClick={handleNext} size="lg" className="bg-blue-600 hover:bg-blue-700">
-                            {isLoading ? <Loader2 className="animate-spin" /> : 'Agree & Continue'}
+                        <Button fullWidth onClick={handleNext} size="lg" className="bg-zinc-800 hover:bg-zinc-900 text-white">
+                            {isLoading ? <Loader2 className="animate-spin" /> : 'Save Profile'}
                         </Button>
                     </div>
                  </div>

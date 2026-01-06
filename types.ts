@@ -7,10 +7,11 @@ export enum AppStage {
 
 export enum OnboardingStep {
   PHONE_ENTRY = 0,
-  DETAILS = 1,     // Name, Email, Aadhaar, PAN
-  CONSENT = 2,     // UPI Auto Debit Consent
-  SECURITY = 3,    // Set PIN & Biometric
-  COMPLETE = 4
+  CONSENT = 1,     // Moved up: Consent comes immediately after OTP
+  DETAILS = 2,     // Then KYC Details
+  ECONOMIC_PROFILE = 3, // Then Income
+  SECURITY = 4,    // Finally Security
+  COMPLETE = 5
 }
 
 export enum SpendCategoryType {

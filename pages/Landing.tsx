@@ -1,5 +1,6 @@
+// ... (imports remain same)
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, X, Smartphone, CheckCircle, IndianRupee, Banknote, ScanLine, Repeat, ShieldCheck, Building2, TrendingUp, Globe, ExternalLink, ArrowRight, Mic, Tv, Wifi, Clapperboard, ChevronLeft, Lock, FileText, Scale, Loader2, RotateCcw, Mail, Phone, Info, Sun, Moon } from 'lucide-react';
+import { Menu, X, Smartphone, IndianRupee, Banknote, ScanLine, Repeat, ShieldCheck, Building2, TrendingUp, Globe, ExternalLink, ArrowRight, Mic, Tv, Wifi, Clapperboard, ChevronLeft, Lock, FileText, Scale, Loader2, Zap, Landmark, Moon, Sun } from 'lucide-react';
 import { Button } from '../components/Button';
 import { AppStage } from '../types';
 import { useTheme } from '../ThemeContext';
@@ -58,56 +59,54 @@ const RECHARGE_PROVIDERS = [
 
 interface HeroSlide {
   id: number;
-  iframeUrl?: string;
   video?: string;
   image: string;
   headline: string;
   subtext: string;
   fallbackColor: string;
+  ctaText: string;
 }
 
 const HERO_SLIDES: HeroSlide[] = [
   {
     id: 0,
-    // Intro - Main Hero Video
-    // Switched to iframeUrl for reliable Google Drive rendering
-    iframeUrl: 'https://drive.google.com/file/d/1cniFYKmM08eJZmO_FxTOq1XS5WhzUjX9/preview',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=1920', // Fallback
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=1920',
     headline: "EC1000 Duo",
     subtext: "RBI inspired LSP, Turning Micro-Access into Macro-Momentum for Viksit Bharat 2047.",
-    fallbackColor: "bg-zinc-900"
+    fallbackColor: "bg-zinc-900",
+    ctaText: "Explore Now"
   },
   {
     id: 1,
-    // Scenario: Mobile/Data
     image: 'https://lh3.googleusercontent.com/d/1pC4kqgYrvG-NwVsNGiHlgrDitKh8RUKD',
     headline: "Data & Entertainment",
     subtext: "Recharge Data, DTH, OTT platforms for higher value packs. Repay in weekly or bi-weekly smaller amounts.",
-    fallbackColor: "bg-zinc-900"
+    fallbackColor: "bg-zinc-900",
+    ctaText: "Recharge Now"
   },
   {
     id: 2,
-    // Scenario: Auto Rickshaw / Fuel
     image: 'https://lh3.googleusercontent.com/d/1JAjVRkj-o4t3eY1g5YYpKPWTKN1JC7v7',
     headline: "EC Spend",
     subtext: "Get Instant fuel credit for viksit barath Rukna Mat Don't Stop",
-    fallbackColor: "bg-zinc-900"
+    fallbackColor: "bg-zinc-900",
+    ctaText: "Fuel Now"
   },
   {
     id: 3,
-    // Scenario: Delivery / Maintenance
     image: 'https://lh3.googleusercontent.com/d/1cKpK3knErsmgAnslSDtIXYv_zt5-AUl_',
     headline: "Rider Support",
     subtext: "Bike maintenance, tyres, or repairs. Instant credit for delivery partners. Rukna Mat.",
-    fallbackColor: "bg-zinc-900"
+    fallbackColor: "bg-zinc-900",
+    ctaText: "Repair Now"
   },
   {
     id: 4,
-    // Scenario: EC Cash (Moved to Last)
     image: 'https://lh3.googleusercontent.com/d/1EhY1pYeT-uaPKPfohTitG9-DE6ywzw3d',
     headline: "EC Cash",
     subtext: "Need urgent funds? Transfer directly to your bank account instantly.",
-    fallbackColor: "bg-zinc-900"
+    fallbackColor: "bg-zinc-900",
+    ctaText: "Transfer Now"
   }
 ];
 
@@ -115,9 +114,9 @@ const NEWS_ITEMS = [
   {
     id: 1,
     tag: "RBI SPEECH",
-    title: "Micro Matters, Macro Momentum: Microfinance for Viksit Bharat",
-    summary: "Speech by Shri Swaminathan J, Deputy Governor at the MFIN event at Mumbai on November 14, 2025. Emphasizing the need for responsible lending in the micro-finance sector.",
-    date: "Nov 14, 2025",
+    title: "Micro Matters, Macro Momentum",
+    summary: "Speech by Shri Swaminathan J, Deputy Governor at MFIN, Nov 2025.",
+    date: "Nov 14",
     source: "Reserve Bank of India",
     icon: Mic,
     color: "text-blue-500",
@@ -125,10 +124,10 @@ const NEWS_ITEMS = [
   },
   {
     id: 2,
-    tag: "REGULATION UPDATE",
-    title: "Master Direction on Digital Lending 2025",
-    summary: "New guidelines ensuring 100% transparency in Key Fact Statements (KFS) and banning floating interest rates for micro-loans under ₹10,000.",
-    date: "Nov 12, 2025",
+    tag: "REGULATION",
+    title: "Digital Lending 2025",
+    summary: "New guidelines on KFS and interest rates for micro-loans.",
+    date: "Nov 12",
     source: "RBI Press Release",
     icon: Building2,
     color: "text-emerald-500",
@@ -136,42 +135,73 @@ const NEWS_ITEMS = [
   },
   {
     id: 3,
-    tag: "FINTECH INNOVATION",
-    title: "UPI Lite X: Offline Payments for Rural India",
-    summary: "NPCI launches offline transaction capabilities for feature phones, empowering street vendors to accept digital payments without internet.",
-    date: "Nov 10, 2025",
+    tag: "INNOVATION",
+    title: "UPI Lite X Offline",
+    summary: "Offline transactions for feature phones.",
+    date: "Nov 10",
     source: "NPCI News",
     icon: TrendingUp,
     color: "text-purple-500",
     link: "https://www.npci.org.in/"
+  },
+  {
+    id: 4,
+    tag: "PRB UPDATE",
+    title: "Payment Systems 2026",
+    summary: "Payments Regulatory Board issues new framework for fintech oversight.",
+    date: "Nov 08",
+    source: "PRB Notification",
+    icon: Landmark,
+    color: "text-orange-500",
+    link: "#"
   }
 ];
 
-const TESTIMONIALS = [
-  {
-    name: "Ramesh, Auto Driver",
-    quote: "CNG line was long, pocket was empty. EC1000 saved my day.",
-    color: "text-blue-400"
-  },
-  {
-    name: "Sunita, Vegetable Seller",
-    quote: "I bought fresh stock early morning using the credit. Repaid by evening.",
-    color: "text-emerald-400"
-  },
-  {
-    name: "Vikram, Delivery Partner",
-    quote: "Bike maintenance couldn't wait. Got it done instantly.",
-    color: "text-orange-400"
-  },
-  {
-    name: "Rahul, Student",
-    quote: "My internet pack expired during exams. Renewed it in seconds.",
-    color: "text-purple-400"
-  }
+const HOW_IT_WORKS_STEPS = [
+    { id: 1, title: 'Enter Number', desc: 'Sign up with your mobile number linked to Aadhaar.', icon: Smartphone },
+    { id: 2, title: 'Instant KYC', desc: 'We fetch your details securely via RBI PTPFC.', icon: ShieldCheck },
+    { id: 3, title: 'Start Spending', desc: 'Get ₹1000 limit instantly. Scan & Pay or Transfer.', icon: Zap }
 ];
 
 // Page Content Data
 const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; icon: any }} = {
+    'about-us': {
+        title: "About EC1000 Duo",
+        icon: Globe,
+        content: (
+            <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
+                <p className="text-lg leading-relaxed text-zinc-900 dark:text-white font-medium">
+                    EC1000 Duo is built on a simple premise: <span className="text-emerald-600 font-bold">Rukna Mat</span> (Don't Stop).
+                </p>
+                <p className="text-base leading-relaxed">
+                    We understand that life's little emergencies shouldn't stop your daily progress. Whether it's a fuel refill, a pharmacy bill, or a grocery run, we provide instant, small-ticket liquidity to keep you moving.
+                </p>
+                <p className="text-base leading-relaxed">
+                    We are a digital-first Lending Service Provider (LSP) compliant with RBI's digital lending guidelines. Our technology ensures that credit is accessible, affordable, and transparent for every Indian.
+                </p>
+
+                <div className="grid gap-6 mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+                    <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 border-l-4 border-blue-500">
+                        <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-2 flex items-center gap-2">
+                           <ScanLine size={20} className="text-blue-500" /> EC Spend
+                        </h3>
+                        <p className="text-sm leading-relaxed">
+                            Our Scan & Pay solution allows users to pay directly at verified merchants for essentials like fuel, groceries, and pharmacy needs. It operates on a shared cumulative spend limit, ensuring funds are used responsibly for daily necessities.
+                        </p>
+                    </div>
+
+                    <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 border-l-4 border-emerald-500">
+                        <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-2 flex items-center gap-2">
+                           <Banknote size={20} className="text-emerald-500" /> EC Cash
+                        </h3>
+                        <p className="text-sm leading-relaxed">
+                            A separate limit dedicated for direct bank transfers to meet personal emergencies. It provides instant access to liquid cash when digital merchant payments aren't an option, with flexible repayment plans.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        )
+    },
     'ethical-lending': {
         title: "Ethical Lending",
         icon: Scale,
@@ -181,7 +211,7 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
                     At EC1000 <span className="text-emerald-600 dark:text-emerald-500 font-bold">Duo</span>, we believe in ethical lending practices for the sustainable growth of our community.
                 </p>
                 <p className="text-base leading-relaxed">
-                    We believe in providing small liquidity for your daily essentials with <span className="text-emerald-600 dark:text-emerald-400 font-bold">FlexiSmart</span> repayment options. This helps you in many ways, and that is the core idea behind EC1000 <span className="text-emerald-600 dark:text-emerald-500 font-bold">Duo</span>: <span className="text-zinc-900 dark:text-white font-bold italic">'Rukna Mat'</span> - Don't Stop. Keep Moving.
+                    We believe in providing small liquidity for the user's daily essentials with <span className="text-emerald-600 dark:text-emerald-400 font-bold">FlexiSmart</span> repayment options. This helps the user in many ways, and that is the core idea behind EC1000 <span className="text-emerald-600 dark:text-emerald-500 font-bold">Duo</span>: <span className="text-zinc-900 dark:text-white font-bold italic">'Rukna Mat'</span> - Don't Stop. Keep Moving.
                 </p>
                 <p className="text-base leading-relaxed">
                     As a <span className="text-zinc-800 dark:text-zinc-100 font-semibold">Lending Service Provider (LSP)</span>, we bridge the gap by partnering with RBI-recognized banks and service providers to ensure safety and trust.
@@ -190,12 +220,12 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
                 <div className="grid gap-6 mt-6">
                     <div className="bg-zinc-100 dark:bg-zinc-800/50 p-6 border-l-4 border-emerald-500">
                         <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-2 flex items-center gap-2"><FileText size={20}/> Transparent Fees</h3>
-                        <p className="text-sm">No hidden charges. You see the exact Processing Fee and APR in the Key Fact Statement (KFS) before you click 'Agree'. We believe in 100% transparency.</p>
+                        <p className="text-sm">No hidden charges. The user sees the exact Processing Fee and APR in the Key Fact Statement (KFS) before the user clicks 'Agree'. We believe in 100% transparency.</p>
                     </div>
 
                     <div className="bg-zinc-100 dark:bg-zinc-800/50 p-6 border-l-4 border-blue-500">
                         <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-2 flex items-center gap-2"><IndianRupee size={20}/> Direct Fund Flow</h3>
-                        <p className="text-sm">We partner with regulated NBFCs (SafeLend) ensuring 100% direct fund flow to your bank or merchant. No third-party wallets holding your money.</p>
+                        <p className="text-sm">We partner with regulated NBFCs (SafeLend) ensuring 100% direct fund flow to the user's bank or merchant. No third-party wallets holding the user's money.</p>
                     </div>
 
                     <div className="bg-zinc-100 dark:bg-zinc-800/50 p-6 border-l-4 border-purple-500">
@@ -207,30 +237,17 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
         )
     },
     'user-responsibility': {
-        title: "Your Responsibility",
+        title: "User Responsibility",
         icon: ShieldCheck,
         content: (
             <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
-                 <p className="text-lg leading-relaxed">
-                    Financial Freedom comes with Responsibility. We empower you, and in return, we expect disciplined financial behavior.
-                </p>
-
-                <div className="space-y-8 mt-8">
-                    <div>
-                        <h3 className="text-zinc-900 dark:text-white font-bold text-xl mb-2 text-emerald-600 dark:text-emerald-400">Build Trust</h3>
-                        <p className="text-sm leading-relaxed">Your repayment behavior is your 'Social Capital'. Timely repayments unlock higher limits (up to ₹5,000) and better products in the future.</p>
-                    </div>
-
-                    <div>
-                        <h3 className="text-zinc-900 dark:text-white font-bold text-xl mb-2 text-blue-600 dark:text-blue-400">Smart Usage</h3>
-                        <p className="text-sm leading-relaxed">Use EC1000 <span className="text-emerald-600 dark:text-emerald-500 font-bold">Duo</span> for high-efficiency needs—full tank fuel to save station visits, or bulk data packs to save money. Don't use it for impulse spending.</p>
-                    </div>
-
-                    <div>
-                        <h3 className="text-zinc-900 dark:text-white font-bold text-xl mb-2 text-red-600 dark:text-red-400">Timely Repayments</h3>
-                        <p className="text-sm leading-relaxed">We sync repayments with your earning cycle (e.g., Weekly for delivery partners). Missing payments affects your credit score (CIBIL) and blocks future access to credit.</p>
-                    </div>
-                </div>
+                <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Be a Smart Borrower</h3>
+                <ul className="space-y-4 list-disc pl-5 text-sm">
+                    <li><strong>Borrow Only What You Need:</strong> Credit is a tool, not income. Use it for planned expenses or emergencies.</li>
+                    <li><strong>Repay on Time:</strong> Timely repayments boost the user's EC Score, unlocking higher limits and lower interest rates.</li>
+                    <li><strong>Protect Credentials:</strong> Never share OTP, PIN, or Password with anyone, including EC1000 support staff.</li>
+                    <li><strong>Read the KFS:</strong> Always review the Key Fact Statement before accepting a loan to understand fees and APR.</li>
+                </ul>
             </div>
         )
     },
@@ -239,78 +256,46 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
         icon: Building2,
         content: (
             <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
-                <div className="bg-zinc-100 dark:bg-zinc-950 p-6 border border-zinc-200 dark:border-zinc-800">
-                    <p className="text-sm text-zinc-500 uppercase font-bold mb-1">Lending Service Provider (LSP)</p>
-                    <p className="text-xl text-zinc-900 dark:text-white font-bold">EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span> (Rukna Mat)</p>
+                <div className="bg-zinc-100 dark:bg-zinc-800 p-4 rounded border-l-4 border-blue-600">
+                    <h4 className="font-bold text-zinc-900 dark:text-white mb-2">Lending Service Provider (LSP)</h4>
+                    <p className="text-sm">Name: EC1000 Digital Services Pvt Ltd</p>
+                    <p className="text-sm">CIN: U72900MH2024PTC123456</p>
+                    <p className="text-sm">Address: 101, Fintech Park, Mumbai, Maharashtra 400001</p>
                 </div>
-
-                 <div className="bg-zinc-100 dark:bg-zinc-950 p-6 border border-zinc-200 dark:border-zinc-800">
-                    <p className="text-sm text-zinc-500 uppercase font-bold mb-1">Regulated Entity (RE)</p>
-                    <p className="text-xl text-zinc-900 dark:text-white font-bold">SafeLend NBFC</p>
-                    <p className="text-xs text-zinc-500 mt-1">RBI Reg No. 12.34567</p>
+                <div className="bg-zinc-100 dark:bg-zinc-800 p-4 rounded border-l-4 border-emerald-600">
+                    <h4 className="font-bold text-zinc-900 dark:text-white mb-2">Regulated Entity (RE) Partner</h4>
+                    <p className="text-sm">Name: SafeLend NBFC Ltd</p>
+                    <p className="text-sm">RBI Reg No: B.05.02345</p>
                 </div>
-
-                <div className="mt-8">
-                    <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-4">Grievance Redressal</h3>
-                    <div className="bg-zinc-50 dark:bg-zinc-800/30 p-4 border-l-2 border-zinc-600 space-y-2">
-                        <p className="text-sm"><span className="text-zinc-500">Officer Name:</span> Mr. Vinay Kumar</p>
-                        <p className="text-sm"><span className="text-zinc-500">Email:</span> grievance@ec1000.in</p>
-                        <p className="text-sm"><span className="text-zinc-500">Phone:</span> 022-1234-5678</p>
-                    </div>
-                </div>
-
-                <div className="mt-8">
-                    <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-2">Digital Lending Guidelines 2025</h3>
-                    <p className="text-sm leading-relaxed">
-                        We fully adhere to RBI's guidelines regarding Key Fact Statements (KFS), cooling-off periods, and direct fund transfers.
-                    </p>
-                </div>
+                <p className="text-sm">
+                    We adhere strictly to RBI's Guidelines on Digital Lending (2022). All loans are disbursed directly from the RE's bank account to the borrower.
+                </p>
             </div>
         )
     },
-    'about-us': {
-        title: "About EC1000 Duo",
-        icon: Globe,
+    'grievance': {
+        title: "Grievance Redressal",
+        icon: Scale,
         content: (
             <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
-                <h3 className="text-2xl font-extrabold text-zinc-900 dark:text-white">Solving the 'Nano-Credit Vacuum'</h3>
-                <p className="text-base leading-relaxed">
-                    India's informal economy runs on speed. But traditional loans are too slow, and asking friends is awkward. 
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold"> EC1000 Duo</span> is the 'Operational Liquidity Utility' for the mass-market—delivery riders, auto drivers, and gig workers.
+                <p className="text-base font-medium">
+                    We are committed to resolving your concerns quickly.
                 </p>
-                <p className="text-base leading-relaxed">
-                    We don't just give money; we ensure you <span className="text-zinc-900 dark:text-white font-bold italic">'Rukna Mat'</span> (Don't Stop). Whether it's fuel, data, or pharmacy needs, we bridge the gap instantly.
-                </p>
-
-                {/* Updated to show Dual Offerings clearly */}
-                <div className="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6">
-                    <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4">Our Dual Offerings</h4>
-                    
-                    <div className="space-y-4">
-                        <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 border-l-2 border-blue-500">
-                            <h5 className="font-bold text-blue-600 dark:text-blue-400 text-lg">1. EC Spend</h5>
-                            <p className="text-sm mt-1">
-                                A dedicated limit of <span className="text-zinc-900 dark:text-white font-bold">up to ₹1000</span> for your essential daily needs. Use it at listed counters for Fuel, Grocery, Pharma, and Utility Bills.
-                            </p>
-                        </div>
-
-                        <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 border-l-2 border-emerald-500">
-                            <h5 className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">2. EC Cash</h5>
-                            <p className="text-sm mt-1">
-                                Need cash in hand? Get direct fund disbursal to your verified bank account instantly for any other emergency needs.
-                            </p>
-                        </div>
+                <div className="space-y-4">
+                    <div className="border-b border-zinc-200 dark:border-zinc-800 pb-4">
+                        <h4 className="font-bold text-zinc-900 dark:text-white">Level 1: Customer Support</h4>
+                        <p className="text-sm">Email: support@ec1000.in</p>
+                        <p className="text-sm">Phone: 022-4567-8900 (Mon-Sat, 9 AM - 6 PM)</p>
                     </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mt-8">
-                    <div className="bg-zinc-100 dark:bg-zinc-800 p-4 text-center">
-                         <p className="text-3xl font-bold text-zinc-900 dark:text-white">10M+</p>
-                         <p className="text-xs text-zinc-500 uppercase mt-1">Lives Impacted</p>
+                    <div className="border-b border-zinc-200 dark:border-zinc-800 pb-4">
+                        <h4 className="font-bold text-zinc-900 dark:text-white">Level 2: Grievance Officer</h4>
+                        <p className="text-sm">Name: Mr. Vinay Kumar</p>
+                        <p className="text-sm">Email: grievance@ec1000.in</p>
+                        <p className="text-sm">Address: 101, Fintech Park, Mumbai</p>
                     </div>
-                     <div className="bg-zinc-100 dark:bg-zinc-800 p-4 text-center">
-                         <p className="text-3xl font-bold text-zinc-900 dark:text-white">₹500Cr</p>
-                         <p className="text-xs text-zinc-500 uppercase mt-1">Credit Disbursed</p>
+                    <div>
+                        <h4 className="font-bold text-zinc-900 dark:text-white">Level 3: RBI Ombudsman</h4>
+                        <p className="text-sm">If unresolved after 30 days, lodge a complaint on <a href="#" className="text-blue-500 underline">cms.rbi.org.in</a>.</p>
                     </div>
                 </div>
             </div>
@@ -320,92 +305,34 @@ const INFO_PAGES: {[key: string]: { title: string; content: React.ReactNode; ico
         title: "Privacy Policy",
         icon: Lock,
         content: (
-            <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
-                <p className="text-sm text-zinc-400">Last Updated: November 15, 2025</p>
-                
-                <h3 className="text-zinc-900 dark:text-white font-bold text-lg">1. Data Collection</h3>
-                <p className="text-sm leading-relaxed">
-                    We collect minimal data required for underwriting:
-                    <ul className="list-disc pl-5 mt-2 space-y-1 text-zinc-500 dark:text-zinc-400">
-                        <li><strong>Identity:</strong> Name, Aadhaar, PAN (for KYC).</li>
-                        <li><strong>Financial SMS:</strong> Transactional SMS logs to assess repayment capacity (read-only).</li>
-                        <li><strong>Device Data:</strong> Model, OS version for fraud prevention.</li>
-                        <li><strong>Location:</strong> One-time capture during onboarding for regulatory compliance.</li>
-                    </ul>
-                </p>
-
-                <h3 className="text-zinc-900 dark:text-white font-bold text-lg">2. Data Usage</h3>
-                <p className="text-sm leading-relaxed">
-                    Your data is used strictly for:
-                    <br/>- Verifying identity and fraud prevention.
-                    <br/>- Assessing creditworthiness for the ₹1000 limit.
-                    <br/>- Processing repayments via NACH/UPI.
-                </p>
-
-                <h3 className="text-zinc-900 dark:text-white font-bold text-lg">3. Data Security</h3>
-                <p className="text-sm leading-relaxed">
-                    All data is encrypted in transit (TLS 1.2) and at rest (AES-256). We do not share your data with third parties for marketing.
-                </p>
-            </div>
+             <div className="space-y-4 text-zinc-600 dark:text-zinc-300 text-sm">
+                <p><strong>Last Updated: Nov 2025</strong></p>
+                <p>1. <strong>Data Collection:</strong> We only collect data required for KYC and underwriting (Name, Phone, Pan, Location for transaction verification).</p>
+                <p>2. <strong>No Contact Scraping:</strong> We do NOT access your contact list or photo gallery.</p>
+                <p>3. <strong>Data Sharing:</strong> Data is shared only with our partner NBFC (SafeLend) for loan processing. We do not sell data to third-party marketers.</p>
+                <p>4. <strong>Storage:</strong> All data is stored on servers located within India.</p>
+             </div>
         )
     },
     'terms': {
         title: "Terms of Service",
         icon: FileText,
         content: (
-            <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
-                <h3 className="text-zinc-900 dark:text-white font-bold text-lg">1. Eligibility</h3>
-                <p className="text-sm leading-relaxed">
-                    You must be an Indian citizen, aged 18-60 years, with a valid bank account and Aadhaar linked mobile number.
-                </p>
-
-                <h3 className="text-zinc-900 dark:text-white font-bold text-lg">2. Products & Limits</h3>
-                <p className="text-sm leading-relaxed">
-                    <strong>EC Spend:</strong> Maximum limit of ₹1000 restricted to specific merchant categories (Fuel, Grocery, Pharma).<br/>
-                    <strong>EC Cash:</strong> Direct bank transfer facility based on user eligibility.<br/>
-                    Usage implies agreement to the Key Fact Statement (KFS) generated at the time of transaction.
-                </p>
-
-                <h3 className="text-zinc-900 dark:text-white font-bold text-lg">3. Repayment</h3>
-                <p className="text-sm leading-relaxed">
-                    Repayments are auto-debited based on the schedule selected. Failure to repay triggers a late fee of ₹10 per day (capped at ₹100) and impacts your CIBIL score.
-                </p>
-            </div>
-        )
-    },
-    'grievance': {
-        title: "Grievance Redressal",
-        icon: Scale, 
-        content: (
-             <div className="space-y-6 text-zinc-600 dark:text-zinc-300">
-                <div className="bg-zinc-100 dark:bg-zinc-800 p-6 border-l-4 border-emerald-500">
-                    <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-4">Level 1: Customer Support</h3>
-                    <p className="text-sm mb-2"><span className="text-zinc-500">Email:</span> support@ec1000.in</p>
-                    <p className="text-sm"><span className="text-zinc-500">Timeline:</span> 24-48 Hours</p>
-                </div>
-
-                <div className="bg-zinc-100 dark:bg-zinc-800 p-6 border-l-4 border-blue-500">
-                    <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-4">Level 2: Grievance Officer</h3>
-                    <p className="text-sm mb-2"><span className="text-zinc-500">Name:</span> Mr. Vinay Kumar</p>
-                    <p className="text-sm mb-2"><span className="text-zinc-500">Email:</span> grievance@ec1000.in</p>
-                    <p className="text-sm mb-2"><span className="text-zinc-500">Phone:</span> 022-4567-8900</p>
-                    <p className="text-sm"><span className="text-zinc-500">Address:</span> Unit 401, Fintech Park, BKC, Mumbai - 400051</p>
-                </div>
-
-                <div className="bg-zinc-100 dark:bg-zinc-800 p-6 border-l-4 border-red-500">
-                    <h3 className="text-zinc-900 dark:text-white font-bold text-lg mb-4">Level 3: RBI Sachet</h3>
-                    <p className="text-sm leading-relaxed">
-                        If your issue is not resolved within 30 days, you may lodge a complaint on the RBI CMS portal: <a href="https://cms.rbi.org.in" target="_blank" className="text-blue-400 underline">cms.rbi.org.in</a>
-                    </p>
-                </div>
+            <div className="space-y-4 text-zinc-600 dark:text-zinc-300 text-sm">
+                <p>By using EC1000 Duo, you agree to the following:</p>
+                <ul className="list-disc pl-5 space-y-2">
+                    <li>You are an Indian citizen above 21 years of age.</li>
+                    <li>You consent to credit checks via Credit Bureaus.</li>
+                    <li>You authorize UPI Auto-Pay for loan repayments.</li>
+                    <li>Late payments may attract penal charges and impact your credit score.</li>
+                </ul>
             </div>
         )
     }
 };
 
 export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [activeOverlay, setActiveOverlay] = useState<string | null>(null); // 'menu', 'recharge', or page keys
+  const [activeOverlay, setActiveOverlay] = useState<string | null>(null);
   const [videoError, setVideoError] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -417,7 +344,6 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
   const [showOtp, setShowOtp] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
 
-  // Sync state with history for back navigation support
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
         const state = event.state;
@@ -427,674 +353,512 @@ export const Landing: React.FC<LandingProps> = ({ onGetStarted }) => {
             setActiveOverlay(null);
         }
     };
-
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Force video autoplay on mount and handle mute
   useEffect(() => {
-    if (currentSlide === 0 && !videoError && videoRef.current) {
-        // Attempt to play
+    if (!videoError && videoRef.current) {
         const attemptPlay = async () => {
              try {
                  videoRef.current!.muted = true;
                  await videoRef.current!.play();
              } catch (e) {
-                 console.warn("Autoplay failed", e);
-                 // If autoplay fails, we can fall back to the image to avoid stuck loading state
-                 setVideoError(true);
+                 console.warn("Autoplay failed");
              }
         };
-
-        // Fallback timeout: if video doesn't play within 3s, show image
-        const timeout = setTimeout(() => {
-            if (videoRef.current && (videoRef.current.networkState === 3 || videoRef.current.readyState === 0)) {
-               setVideoError(true); 
-            }
-        }, 3000); 
-
         attemptPlay();
-
-        return () => clearTimeout(timeout);
     }
-  }, [currentSlide, videoError]);
+  }, [videoError]);
 
   const openOverlay = (name: string) => {
-      setActiveOverlay(name);
-      window.history.pushState({ stage: AppStage.LANDING, overlay: name }, '');
+    setActiveOverlay(name);
+    window.history.pushState({ overlay: name }, '');
   };
 
   const closeOverlay = () => {
-      if (activeOverlay) {
-          window.history.back(); // This triggers popstate, which sets ActiveOverlay to null
+    setActiveOverlay(null);
+    window.history.back();
+  };
+
+  const scrollToSection = (id: string) => {
+      const element = document.getElementById(id);
+      if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+      }
+  };
+  
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value.replace(/\D/g, '');
+      if (val.length <= 10) {
+          setPhone(val);
       }
   };
 
-  const handleScroll = () => {
-    if (scrollContainerRef.current) {
-      const { scrollTop, clientHeight } = scrollContainerRef.current;
-      const index = Math.round(scrollTop / clientHeight);
-      setCurrentSlide(index);
+  const handleGetOtp = () => {
+    if (phone.length === 10) {
+        setShowOtp(true);
     }
   };
 
-  const scrollToSlide = (index: number) => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTo({
-        top: index * scrollContainerRef.current.clientHeight,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const handlePhoneSubmit = () => {
-      if (phone.length === 10) {
-          setShowOtp(true);
-      }
-  };
-
-  const handleVerifyOtp = () => {
+  const handleVerify = () => {
       if (otp.length === 4) {
           setIsVerifying(true);
           setTimeout(() => {
-              setIsVerifying(false);
-              onGetStarted(phone);
+             onGetStarted(phone);
           }, 1000);
       }
   };
 
-  const menuItems = [
-    { label: "How it Works", action: () => document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' }) },
-    { label: "Ethical Lending", action: () => openOverlay('ethical-lending') },
-    { label: "Your Responsibility", action: () => openOverlay('user-responsibility') },
-    { label: "RBI Rules & Partners", action: () => openOverlay('rbi-rules') },
-    { label: "About Us", action: () => openOverlay('about-us') },
-    { label: "Contact Support", action: () => openOverlay('grievance') },
-  ];
-
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 font-sans relative text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
-      {/* Sticky Header - Ash Grey Theme - Sharp Edges */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm z-40 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between px-4 md:px-8 transition-all duration-300 pt-[env(safe-area-inset-top)]">
-        <div className="flex flex-col justify-center">
-            <div className="flex items-baseline space-x-3">
-                <span className="font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white leading-none tracking-tighter">EC1000</span>
-                <span className="font-bold text-4xl md:text-5xl text-emerald-600 dark:text-emerald-500 leading-none tracking-tighter">Duo</span>
-            </div>
-        </div>
-
-        <div className="flex items-center space-x-2">
-            <button 
-                onClick={toggleTheme}
-                className="p-3 text-zinc-500 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-            >
-                {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
-            </button>
-            <button 
-                onClick={() => openOverlay('menu')}
-                className="p-3 text-zinc-500 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-            >
-                <Menu size={24} />
-            </button>
-        </div>
-      </header>
-
-      {/* Menu Overlay */}
-      {activeOverlay === 'menu' && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeOverlay}></div>
-          <div className="relative w-64 md:w-80 bg-white dark:bg-zinc-900 h-full shadow-2xl p-6 flex flex-col animate-slide-in-right border-l border-zinc-200 dark:border-zinc-800 pt-[calc(1.5rem+env(safe-area-inset-top))]">
-            <div className="flex justify-between items-center mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-4">
-              <span className="font-bold text-lg text-zinc-900 dark:text-white tracking-tight">Menu</span>
-              <button onClick={closeOverlay} className="text-zinc-400 hover:text-red-500 transition-colors p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                <X size={24} />
+    <div className="min-h-screen bg-white dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+      
+      {/* Navbar */}
+      <nav className="fixed top-0 w-full z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-baseline space-x-2">
+            <span className="text-2xl font-black text-zinc-900 dark:text-white tracking-tighter">EC1000</span>
+            <span className="text-2xl font-black text-emerald-600 dark:text-emerald-500 tracking-tighter">Duo</span>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                  {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
               </button>
-            </div>
-            <nav className="space-y-1 flex-1 overflow-y-auto">
-              {menuItems.map((item, index) => (
-                <button 
-                  key={index} 
-                  className="block w-full text-left text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 p-4 text-base font-medium border-b border-zinc-100 dark:border-zinc-800/50 transition-colors"
-                  onClick={() => {
-                      if(item.label === 'How it Works') {
-                          closeOverlay();
-                          setTimeout(item.action, 300); // Wait for menu close
-                      } else {
-                          // Replace menu state with content state (replaceState logic handled by just pushing new state, menu closes naturally if not stacked)
-                          // Actually, we want to go from Menu -> Content.
-                          // So we push new state.
-                          item.action();
-                      }
-                  }}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-            <div className="mt-auto pt-6 text-xs text-zinc-500 font-medium pb-[env(safe-area-inset-bottom)]">
-              v1.0.0 • EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span>
-            </div>
+              <button 
+                onClick={() => openOverlay('menu')}
+                className="p-2 -mr-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              >
+                <Menu size={24} />
+              </button>
           </div>
         </div>
-      )}
+      </nav>
 
-      {/* Info Pages Modal (Ethical Lending, etc) */}
-      {activeOverlay && INFO_PAGES[activeOverlay] && (
-          <div className="fixed inset-0 z-[60] flex justify-end">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={closeOverlay}></div>
-            <div className="relative w-full md:w-[600px] bg-white dark:bg-zinc-900 h-full shadow-2xl flex flex-col animate-slide-in-right border-l border-zinc-200 dark:border-zinc-800">
-                <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 sticky top-0 z-10 pt-[calc(1.5rem+env(safe-area-inset-top))]">
-                    <div className="flex items-center gap-3">
-                        <button onClick={closeOverlay} className="p-2 -ml-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full text-zinc-500 dark:text-zinc-400">
-                            <ChevronLeft size={24} />
-                        </button>
-                        <h2 className="text-xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                            {/* @ts-ignore */}
-                            {React.createElement(INFO_PAGES[activeOverlay].icon, { size: 24, className: "text-emerald-600 dark:text-emerald-500" })}
-                            {INFO_PAGES[activeOverlay].title}
-                        </h2>
-                    </div>
-                </div>
-                <div className="flex-1 overflow-y-auto p-6 md:p-10">
-                    {INFO_PAGES[activeOverlay].content}
-                </div>
-                <div className="p-6 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-                    <Button fullWidth onClick={closeOverlay} variant="secondary">Close</Button>
-                </div>
-            </div>
-          </div>
-      )}
-
-      {/* Recharge Modal Overlay */}
-      {activeOverlay === 'recharge' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={closeOverlay}></div>
-          <div className="relative bg-white dark:bg-zinc-900 w-full max-w-4xl max-h-[90dvh] overflow-y-auto rounded-none border border-zinc-200 dark:border-zinc-700 shadow-2xl animate-fade-in">
-             <div className="sticky top-0 bg-zinc-50 dark:bg-zinc-950 p-6 border-b border-zinc-200 dark:border-zinc-800 flex justify-between items-center z-10">
-                <div>
-                   <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">Recharge Hub</h2>
-                   <p className="text-zinc-500 dark:text-zinc-400 text-sm">Select a provider to proceed with EC1000 credit</p>
-                </div>
-                <button onClick={closeOverlay} className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full transition-colors">
-                   <X className="text-zinc-900 dark:text-white" />
-                </button>
-             </div>
-             
-             <div className="p-6 space-y-8 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-                {RECHARGE_PROVIDERS.map((category) => (
-                   <div key={category.category}>
-                      <div className="flex items-center space-x-2 mb-4">
-                         <category.icon className={category.color} size={24} />
-                         <h3 className="text-xl font-bold text-zinc-800 dark:text-zinc-200">{category.category}</h3>
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                         {category.brands.map((brand) => (
-                            <a 
-                               key={brand.name}
-                               href={brand.url}
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               className="bg-zinc-50 dark:bg-white hover:bg-zinc-100 p-6 flex flex-col items-center justify-center space-y-4 transition-all hover:scale-105 group border border-zinc-200"
-                            >
-                               <div className="h-12 w-full flex items-center justify-center">
-                                  <img 
-                                    src={brand.logo} 
-                                    alt={brand.name} 
-                                    className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300" 
-                                    referrerPolicy="no-referrer"
-                                  />
-                               </div>
-                               <span className="text-zinc-800 font-bold text-sm">{brand.name}</span>
-                            </a>
-                         ))}
-                      </div>
-                   </div>
-                ))}
-             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Hero Section */}
-      <section className="relative h-[calc(100dvh-64px)] min-h-[500px] bg-zinc-50 dark:bg-zinc-900 mt-16 group">
-        <div 
-          ref={scrollContainerRef}
-          onScroll={handleScroll}
-          className="w-full h-full flex flex-col overflow-y-auto snap-y snap-mandatory scrollbar-hide"
-        >
-          {HERO_SLIDES.map((slide) => (
-            <div
-              key={slide.id}
-              className={`w-full h-full flex-shrink-0 snap-center relative overflow-hidden bg-zinc-900 rounded-none`}
-              role="img"
-              aria-label={slide.headline}
-            >
-              {/* Conditional Iframe, Video or Image Background */}
-              {/* @ts-ignore */}
-              {slide.iframeUrl ? (
-                  <iframe
-                      src={`${slide.iframeUrl}?autoplay=1&mute=1&controls=0&loop=1`}
-                      className="absolute inset-0 w-[300%] h-full -ml-[100%] md:w-full md:ml-0 object-cover z-0"
-                      allow="autoplay; encrypted-media"
-                      title={slide.headline}
-                      style={{ pointerEvents: 'none' }} // Prevent interaction with Drive UI for background effect
-                  ></iframe>
-              ) : (
-                /* @ts-ignore */
-                slide.video && !videoError ? (
-                   <video
-                      ref={slide.id === 0 ? videoRef : null}
-                      key={slide.video}
-                      poster={slide.image} // Fallback image shown while loading
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover z-0 rounded-none"
-                      onError={() => setVideoError(true)}
-                   >
-                      <source src={slide.video} />
-                   </video>
-                ) : (
-                  <>
-                      {slide.image && (
-                          <img 
-                              src={slide.image} 
-                              alt={slide.headline}
-                              className={`absolute inset-0 w-full h-full z-0 rounded-none object-cover`}
-                              referrerPolicy="no-referrer"
-                          />
-                      )}
-                  </>
-                )
-              )}
-
-              {/* Gradient Overlay - Darkened top AND bottom for better text readability on white text */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 z-10 pointer-events-none"></div>
-              
-              {/* Text Content - Layout Restructured */}
-              
-              {/* Subtext - Extreme Top Left - Minimal Padding */}
-              <div className="absolute top-0 left-0 z-20 px-4 pt-4 md:px-6 md:pt-8 max-w-2xl pointer-events-none text-left">
-                <p className={`text-2xl md:text-4xl font-bold tracking-wide leading-tight shadow-sm drop-shadow-md text-white`}>
-                    {slide.subtext}
-                </p>
-              </div>
-
-              {/* Headline and Button - Extreme Bottom Right - Inline Stack with Faded Line */}
-              <div className="absolute bottom-0 right-0 z-30 flex flex-row items-center gap-6 pointer-events-none justify-end w-full max-w-full px-4 pb-4 md:px-6 md:pb-6">
-                  {/* Headline - Inline with CTA */}
-                  <h1 className={`text-2xl md:text-6xl font-extrabold leading-none tracking-tight shadow-sm drop-shadow-md text-right text-white`}>
-                    {slide.headline.split('Duo').map((part, i, arr) => (
-                        <React.Fragment key={i}>
-                            {part}
-                            {i < arr.length - 1 && <span className="text-emerald-500">Duo</span>}
-                        </React.Fragment>
-                    ))}
-                  </h1>
-
-                  {/* Stylish Violet Vertical Line */}
-                  <div className="h-12 md:h-20 w-1.5 bg-violet-500 rounded-full shadow-[0_0_15px_rgba(139,92,246,0.8)] hidden md:block transform rotate-0 mx-2"></div>
+      {/* Main Scroll Container */}
+      <div 
+        ref={scrollContainerRef}
+        className="h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth pt-16"
+      >
+          {/* VERTICAL HERO SECTIONS - Full Screen */}
+          {HERO_SLIDES.map((slide, index) => (
+              <section 
+                key={slide.id}
+                className="relative h-screen w-full snap-start flex-shrink-0 bg-zinc-900 overflow-hidden border-b border-zinc-800"
+              >
+                  {slide.video && !videoError ? (
+                       <video 
+                          ref={index === 0 ? videoRef : undefined}
+                          src={slide.video}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          onError={() => setVideoError(true)}
+                       />
+                  ) : (
+                       <img src={slide.image} alt={slide.headline} className="absolute inset-0 w-full h-full object-cover" />
+                  )}
                   
-                  {/* CTA Button */}
-                  <div className="pointer-events-auto shrink-0">
-                      <Button 
-                        onClick={() => {
-                           if (slide.id === 1) { // Data & Entertainment Slide
-                              openOverlay('recharge');
-                           } else {
-                              document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' });
-                           }
-                        }} 
-                        className={`bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl font-bold tracking-wide border-none px-6 py-4 md:px-8 md:py-5 text-base md:text-lg transition-transform hover:scale-105 flex items-center gap-2 rounded-none`}
+                  {/* Overlay for better text visibility */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 pointer-events-none"></div>
+
+                  {/* Subtext - Moved Higher and Bold */}
+                  <div className="absolute top-16 left-0 p-6 md:p-12 z-20 max-w-xl">
+                      <p className="text-lg md:text-xl text-white/90 font-bold leading-snug drop-shadow-lg border-l-4 border-emerald-500 pl-4">
+                          {slide.subtext}
+                      </p>
+                  </div>
+
+                  {/* Headline & CTA - Bottom Aligned Single Line */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 z-20 pb-12 md:pb-12 flex flex-row items-end justify-between gap-4">
+                      <h1 className="text-3xl md:text-5xl font-black text-white leading-tight tracking-tighter drop-shadow-xl uppercase flex-1 whitespace-normal">
+                          {slide.headline}
+                      </h1>
+
+                      <button 
+                           onClick={() => scrollToSection('how-it-works')}
+                           className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 shadow-2xl flex items-center gap-2 shrink-0 mb-1"
                       >
-                        {slide.id === 0 && "Explore Now"}
-                        {slide.id === 1 && "Recharge Now"}
-                        {slide.id === 2 && "Fuel Now"}
-                        {slide.id === 3 && "Fix Now"}
-                        {slide.id === 4 && "Get Cash"}
-                      </Button>
+                          {slide.ctaText}
+                      </button>
+                  </div>
+              </section>
+          ))}
+
+          {/* FEATURES GRID - Compact Single View */}
+          <section className="h-screen snap-start bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center px-4 overflow-hidden relative">
+              <div className="max-w-6xl mx-auto w-full">
+                  <div className="text-left md:text-center mb-8 md:mb-12">
+                      <span className="text-emerald-600 dark:text-emerald-500 font-bold tracking-widest uppercase text-xs md:text-sm">Why EC1000 Duo?</span>
+                      <h2 className="text-3xl md:text-5xl font-black text-zinc-900 dark:text-white mt-1 uppercase tracking-tighter leading-none">
+                          Small Credit. <span className="text-zinc-400">Massive Impact.</span>
+                      </h2>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800">
+                      {/* EC Cash */}
+                      <div className="p-6 md:p-8 bg-white dark:bg-zinc-900 flex flex-row md:flex-col items-center md:items-start text-left gap-4 group hover:bg-zinc-50 dark:hover:bg-black transition-colors">
+                          <div className="shrink-0 text-emerald-600 dark:text-emerald-400 transform group-hover:scale-110 transition-transform">
+                              <Banknote size={32} strokeWidth={1.5} />
+                          </div>
+                          <div>
+                              <h3 className="text-lg md:text-xl font-bold text-zinc-900 dark:text-white mb-1">EC Cash</h3>
+                              <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed">
+                                  Instant transfer to bank account for emergency needs.
+                              </p>
+                          </div>
+                      </div>
+
+                      {/* EC Spend */}
+                      <div className="p-6 md:p-8 bg-white dark:bg-zinc-900 flex flex-row md:flex-col items-center md:items-start text-left gap-4 group hover:bg-zinc-50 dark:hover:bg-black transition-colors">
+                          <div className="shrink-0 text-blue-600 dark:text-blue-400 transform group-hover:scale-110 transition-transform">
+                              <ScanLine size={32} strokeWidth={1.5} />
+                          </div>
+                          <div>
+                              <h3 className="text-lg md:text-xl font-bold text-zinc-900 dark:text-white mb-1">EC Spend</h3>
+                              <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed">
+                                  Scan & Pay at Fuel Stations, Pharmacies, and Grocery stores.
+                              </p>
+                          </div>
+                      </div>
+
+                      {/* FlexiSmart */}
+                      <div className="p-6 md:p-8 bg-white dark:bg-zinc-900 flex flex-row md:flex-col items-center md:items-start text-left gap-4 group hover:bg-zinc-50 dark:hover:bg-black transition-colors">
+                          <div className="shrink-0 text-purple-600 dark:text-purple-400 transform group-hover:scale-110 transition-transform">
+                              <Repeat size={32} strokeWidth={1.5} />
+                          </div>
+                          <div>
+                              <h3 className="text-lg md:text-xl font-bold text-zinc-900 dark:text-white mb-1">FlexiSmart</h3>
+                              <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm leading-relaxed">
+                                  Weekly or bi-weekly cycles aligned with your earnings.
+                              </p>
+                          </div>
+                      </div>
                   </div>
               </div>
+          </section>
 
-            </div>
-          ))}
-        </div>
+          {/* HOW IT WORKS + INPUT SECTION */}
+          <section id="how-it-works" className="min-h-screen py-16 bg-zinc-900 snap-start flex flex-col justify-center items-center text-white relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-800 to-zinc-950 opacity-50"></div>
+              
+              <div className="max-w-4xl mx-auto px-4 w-full relative z-10">
+                  <div className="grid md:grid-cols-2 gap-12 items-center">
+                      <div className="space-y-8 text-left">
+                          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-none mb-8 text-white">How It Works</h2>
+                           {HOW_IT_WORKS_STEPS.map((step) => (
+                                  <div key={step.id} className="flex items-start gap-4 group">
+                                      <div className="text-3xl font-black text-emerald-600/30 group-hover:text-emerald-500 transition-colors">0{step.id}</div>
+                                      <div>
+                                          <h3 className="text-lg font-bold mb-1 group-hover:text-emerald-400 transition-colors">{step.title}</h3>
+                                          <p className="text-zinc-400 text-sm leading-relaxed">{step.desc}</p>
+                                      </div>
+                                  </div>
+                              ))}
+                      </div>
 
-        {/* Slide Indicators */}
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-30 flex flex-col space-y-4 pointer-events-none">
-          {HERO_SLIDES.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => scrollToSlide(index)}
-              className={`transition-all duration-300 pointer-events-auto shadow-sm ${
-                index === currentSlide 
-                    ? 'w-1 h-8 bg-white opacity-100' 
-                    : 'w-1 h-2 bg-white/50 hover:bg-white/80'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      </section>
+                      <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl">
+                           {!showOtp ? (
+                               <div className="space-y-4">
+                                   <div>
+                                       <label className="text-sm font-bold text-zinc-300 uppercase tracking-widest mb-2 block">Check Eligibility</label>
+                                       <div className="flex items-center border-b-2 border-zinc-500 focus-within:border-emerald-500 transition-colors pb-2">
+                                           <span className="text-xl font-bold text-zinc-300 mr-3 shrink-0">+91</span>
+                                           <input 
+                                                type="tel" 
+                                                value={phone}
+                                                onChange={handlePhoneChange}
+                                                className="w-full text-2xl font-bold bg-transparent outline-none placeholder:text-zinc-600 text-white min-w-0"
+                                                placeholder="99999 00000"
+                                                maxLength={10}
+                                           />
+                                           {phone.length === 10 && (
+                                               <button 
+                                                   onClick={handleGetOtp}
+                                                   className="shrink-0 bg-emerald-600 text-white text-sm font-bold px-4 py-2 uppercase tracking-wider hover:bg-emerald-500 transition-all animate-fade-in rounded-sm"
+                                               >
+                                                   Get OTP
+                                               </button>
+                                           )}
+                                       </div>
+                                   </div>
+                               </div>
+                           ) : (
+                               <div className="space-y-6 animate-fade-in">
+                                   <div>
+                                       <label className="text-sm font-bold text-zinc-300 uppercase tracking-widest mb-2 block">Enter OTP</label>
+                                       <div className="flex items-center border-b-2 border-zinc-500 focus-within:border-emerald-500 transition-colors pb-2">
+                                           <Lock className="text-zinc-400 mr-3 mb-1 shrink-0" size={20} />
+                                           <input 
+                                                type="text" 
+                                                value={otp}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/\D/g, '');
+                                                    if (val.length <= 4) setOtp(val);
+                                                }}
+                                                className="w-full text-2xl font-bold bg-transparent outline-none tracking-[0.5em] placeholder:tracking-normal placeholder:text-zinc-600 text-white min-w-0"
+                                                placeholder="••••"
+                                                maxLength={4}
+                                                autoFocus
+                                           />
+                                           {otp.length === 4 && (
+                                                <button 
+                                                    onClick={handleVerify}
+                                                    className="shrink-0 bg-emerald-600 text-white text-sm font-bold px-4 py-2 uppercase tracking-wider hover:bg-emerald-500 transition-all animate-fade-in flex items-center gap-2 rounded-sm"
+                                                >
+                                                    {isVerifying ? <Loader2 className="animate-spin" size={16} /> : 'Verify'}
+                                                </button>
+                                           )}
+                                       </div>
+                                   </div>
+                                   
+                                   <button onClick={() => { setShowOtp(false); setOtp(''); }} className="w-full text-right text-xs font-bold text-zinc-500 hover:text-white uppercase tracking-wide">
+                                       Change Number
+                                   </button>
+                               </div>
+                           )}
+                           
+                           <div className="mt-6 flex items-center gap-2 text-xs text-zinc-400 font-medium bg-black/30 p-3 rounded">
+                               <ShieldCheck size={16} className="text-emerald-500" />
+                               <span>Data secured via RBI Account Aggregator.</span>
+                           </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
 
-      {/* Access / Steps Section - Compact Layout */}
-      <section id="steps" className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 scroll-mt-16">
-        <div className="w-full max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row shadow-sm">
-                
-                {/* Left Column: Steps List - More Compact */}
-                <div className="w-full md:w-1/2 p-6 md:p-12 bg-zinc-50 dark:bg-zinc-950 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-800 flex flex-col justify-center">
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-6 md:mb-8">Access EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span> in 3 Steps</h2>
-                    
-                    <div className="space-y-6">
-                        <div className="flex flex-row items-start space-x-4">
-                             <div className="shrink-0">
-                                <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-base border border-blue-200 dark:border-blue-800">1</div>
+          {/* NEWS TICKER - Vertical Scrolling List */}
+          <section className="h-screen snap-start bg-zinc-100 dark:bg-zinc-900 border-y border-zinc-200 dark:border-zinc-800 flex flex-col justify-center overflow-hidden">
+             <div className="max-w-4xl mx-auto px-4 w-full h-full flex flex-col justify-center py-20">
+                 <div className="flex justify-between items-end mb-4 shrink-0">
+                      <h3 className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white uppercase tracking-tighter">Fintech Updates</h3>
+                      <a href="#" className="text-xs font-bold text-blue-600 uppercase tracking-widest hover:underline">View All</a>
+                 </div>
+
+                 {/* Vertical Scrolling Container */}
+                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-0">
+                     <div className="space-y-3">
+                         {NEWS_ITEMS.map((item) => (
+                             <div key={item.id} className="bg-white dark:bg-zinc-800/50 p-4 rounded-none border-l-4 border-l-transparent hover:border-l-emerald-500 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:shadow-md transition-all flex flex-row items-start gap-3">
+                                 {/* Icon - Aligned Left */}
+                                 <div className={`shrink-0 p-2 rounded-full bg-zinc-100 dark:bg-zinc-900 ${item.color}`}>
+                                     <item.icon size={20} />
+                                 </div>
+                                 {/* Content */}
+                                 <div className="flex-1 w-full">
+                                      <div className="flex justify-between items-start w-full mb-0.5">
+                                         <span className={`text-[10px] font-bold uppercase tracking-widest ${item.color}`}>
+                                             {item.tag}
+                                         </span>
+                                         <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{item.date}</span>
+                                      </div>
+                                      <h4 className="font-bold text-base text-zinc-900 dark:text-white leading-tight mb-1">{item.title}</h4>
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed mb-2 line-clamp-2">{item.summary}</p>
+                                      
+                                      <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-700">
+                                          <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest truncate max-w-[150px]">
+                                              Source: {item.source}
+                                          </div>
+                                          <a href={item.link} className="text-[10px] font-bold text-blue-500 uppercase tracking-widest flex items-center gap-1 hover:underline whitespace-nowrap">
+                                              Read <ExternalLink size={10} />
+                                          </a>
+                                      </div>
+                                 </div>
                              </div>
-                             <div>
-                                <h3 className="font-bold text-zinc-900 dark:text-white text-lg mb-0.5">Enter Mobile</h3>
-                                <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Enter your phone number to start.</p>
-                             </div>
-                        </div>
-
-                        <div className="flex flex-row items-start space-x-4">
-                             <div className="shrink-0">
-                                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-base border border-emerald-200 dark:border-emerald-800">2</div>
-                             </div>
-                             <div>
-                                <h3 className="font-bold text-zinc-900 dark:text-white text-lg mb-0.5">Verify</h3>
-                                <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Input your Pan, Aadhaar + selfie for ekyc verification</p>
-                             </div>
-                        </div>
-
-                        <div className="flex flex-row items-start space-x-4">
-                             <div className="shrink-0">
-                                <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold text-base border border-orange-200 dark:border-orange-800">3</div>
-                             </div>
-                             <div>
-                                <h3 className="font-bold text-zinc-900 dark:text-white text-lg mb-0.5">Get Limits</h3>
-                                <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Access EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span> instantly</p>
-                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Column: Input Form - Compact */}
-                <div className="w-full md:w-1/2 p-6 md:p-12 bg-white dark:bg-zinc-900 flex flex-col justify-center">
-                     <div className="max-w-lg mx-auto w-full">
-                        <h3 className="text-base md:text-lg font-medium text-zinc-500 dark:text-zinc-400 mb-6 whitespace-nowrap">Enter Mobile Number to Start</h3>
-
-                        <div className="flex items-end gap-3">
-                             <div className="relative flex-1 flex items-center border-b-2 border-zinc-200 dark:border-zinc-700 focus-within:border-emerald-600 dark:focus-within:border-emerald-500 py-2 transition-colors">
-                                {/* Phone Input Stage */}
-                                {!showOtp && (
-                                    <>
-                                        <span className="text-2xl md:text-4xl font-bold text-zinc-400 dark:text-zinc-600 mr-3 select-none">+91</span>
-                                        <input 
-                                            type="tel" 
-                                            value={phone}
-                                            onChange={(e) => {
-                                                const val = e.target.value.replace(/\D/g, '');
-                                                if (val.length <= 10) setPhone(val);
-                                            }}
-                                            className="w-full bg-transparent text-2xl md:text-4xl font-bold text-zinc-900 dark:text-white outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700 tracking-wide"
-                                            placeholder="98765 43210"
-                                            maxLength={10}
-                                        />
-                                    </>
-                                )}
-
-                                {/* OTP Input Stage */}
-                                {showOtp && (
-                                    <div className="flex-1 flex items-center justify-center animate-slide-in-right">
-                                         <input 
-                                            type="text" 
-                                            value={otp}
-                                            onChange={(e) => {
-                                                const val = e.target.value.replace(/\D/g, '');
-                                                if (val.length <= 4) setOtp(val);
-                                            }}
-                                            className="w-full bg-transparent text-center text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white outline-none tracking-[0.5em] placeholder:tracking-normal placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
-                                            placeholder="OTP"
-                                            maxLength={4}
-                                            autoFocus
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            
-                            <div className="shrink-0 mb-1">
-                                {!showOtp ? (
-                                    <Button 
-                                        onClick={handlePhoneSubmit}
-                                        disabled={phone.length !== 10}
-                                        size="md"
-                                        className="rounded-full py-2 px-6 text-sm font-bold shadow-lg bg-emerald-600 hover:bg-emerald-700 text-white"
-                                    >
-                                        Get OTP
-                                    </Button>
-                                ) : (
-                                    <Button 
-                                        onClick={handleVerifyOtp}
-                                        disabled={otp.length !== 4 || isVerifying}
-                                        size="md"
-                                        className={`rounded-full py-2 px-6 text-sm font-bold shadow-lg whitespace-nowrap ${otp.length === 4 ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed'}`}
-                                    >
-                                        {isVerifying ? <Loader2 className="animate-spin w-4 h-4" /> : 'Verify'}
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-                        
-                        {showOtp && (
-                            <div className="flex justify-between mt-4 px-1">
-                                <button onClick={() => {setShowOtp(false); setOtp('');}} className="text-xs font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 underline">Change Number</button>
-                                <button className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"><RotateCcw size={12} /> Resend OTP</button>
-                            </div>
-                        )}
+                         ))}
                      </div>
-                </div>
-
-            </div>
-        </div>
-      </section>
-
-      {/* Features - Clean Icons, No Boxes */}
-      <section className="bg-white dark:bg-zinc-900 relative border-b border-zinc-200 dark:border-zinc-800">
-         <div className="w-full">
-            <div className="text-left py-12 px-6 md:px-12 bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800">
-                 <span className="text-blue-600 dark:text-blue-400 font-bold tracking-wider uppercase text-sm block mb-2">Features</span>
-                 {/* Removed 'Designed for the Common Man' headline as requested */}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-zinc-200 dark:divide-zinc-800 border-b border-zinc-200 dark:border-zinc-800">
-                {/* EC Cash */}
-                <div className="group relative bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 p-8 md:p-12 transition-colors text-left flex flex-row items-start space-x-6">
-                    <div className="shrink-0 text-blue-600 dark:text-blue-500 mt-1">
-                        <Banknote size={48} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">EC Cash</h3>
-                        <p className="text-zinc-600 dark:text-zinc-400 text-base leading-relaxed">
-                            <span className="font-bold text-zinc-900 dark:text-white">₹1000 instant</span> directly to your bank account.
-                        </p>
-                    </div>
-                </div>
-
-                {/* EC Spend */}
-                <div className="group relative bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 p-8 md:p-12 transition-colors text-left flex flex-row items-start space-x-6">
-                    <div className="shrink-0 text-purple-600 dark:text-purple-500 mt-1">
-                        <ScanLine size={48} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">EC Spend</h3>
-                        <p className="text-zinc-600 dark:text-zinc-400 text-base leading-relaxed">
-                            Pay for <span className="font-bold text-zinc-900 dark:text-white">fuel & groceries</span> instantly via QR scan.
-                        </p>
-                    </div>
-                </div>
-
-                {/* Flexible Repay */}
-                <div className="group relative bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 p-8 md:p-12 transition-colors text-left flex flex-row items-start space-x-6">
-                    <div className="shrink-0 text-orange-600 dark:text-orange-500 mt-1">
-                        <Repeat size={48} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">Flexible Repay</h3>
-                        <p className="text-zinc-600 dark:text-zinc-400 text-base leading-relaxed">
-                            Small <span className="font-bold text-zinc-900 dark:text-white">daily, weekly, bi-weekly</span> aligned with your earnings cycles.
-                        </p>
-                    </div>
-                </div>
-
-                {/* Build Trust */}
-                <div className="group relative bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 p-8 md:p-12 transition-colors text-left flex flex-row items-start space-x-6">
-                    <div className="shrink-0 text-emerald-600 dark:text-emerald-500 mt-1">
-                        <ShieldCheck size={48} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">Build Trust</h3>
-                        <p className="text-zinc-600 dark:text-zinc-400 text-base leading-relaxed">
-                            Good usage behavior unlocks <span className="font-bold text-zinc-900 dark:text-white">higher limits</span>.
-                        </p>
-                    </div>
-                </div>
-            </div>
-         </div>
-      </section>
-
-      {/* Partners Strip - Full width - Left Aligned */}
-      <section className="py-10 bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
-        <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-8 text-left text-zinc-600 dark:text-zinc-300 text-base md:text-lg font-bold tracking-wide uppercase flex-wrap">
-                <div className="flex items-center space-x-2 text-zinc-700 dark:text-zinc-200">
-                    <ShieldCheck className="text-green-600 dark:text-green-500" size={28} />
-                    <span>RBI Inspired</span>
-                </div>
-                <div className="h-6 w-0.5 bg-zinc-300 dark:bg-zinc-600 hidden md:block"></div>
-                <div>Reputed Banks & NBFC</div>
-                <div className="h-6 w-0.5 bg-zinc-300 dark:bg-zinc-600 hidden md:block"></div>
-                <div>UPI Enabled</div>
-                <div className="h-6 w-0.5 bg-zinc-300 dark:bg-zinc-600 hidden md:block"></div>
-                <div>NPCI Compliant</div>
-                <div className="bg-white dark:bg-zinc-900 text-green-700 dark:text-green-400 px-6 py-2 text-sm md:text-base font-bold border-2 border-green-200 dark:border-green-900 rounded-full shadow-sm">
-                    RBI Digital Lending 2025
-                </div>
-            </div>
-        </div>
-      </section>
-
-      {/* Financial Feed - Rectangular Grid, No Gaps, Real Content, Horizontal Layout */}
-      <section className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
-          <div className="w-full">
-             <div className="p-6 md:p-8 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                 <h2 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight whitespace-nowrap">Financial News & Updates</h2>
-                 <div className="flex items-center space-x-2 text-red-500 animate-pulse mt-0">
-                     <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                     <span className="text-xs font-bold uppercase tracking-wider">Live Feed</span>
                  </div>
              </div>
-             
-             {/* Full width rectangular grid */}
-             <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-zinc-200 dark:divide-zinc-800 border-b border-zinc-200 dark:border-zinc-800">
-                 {NEWS_ITEMS.map((item) => (
-                     <a 
-                        key={item.id} 
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-zinc-50 dark:bg-zinc-800/30 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all p-6 md:p-8 group cursor-pointer flex flex-row items-center space-x-6 h-full block"
-                     >
-                         {/* Icon aligned center - No Box */}
-                         <div className={`shrink-0 ${item.color}`}>
-                            <item.icon size={36} strokeWidth={1.5} />
-                         </div>
-                         
-                         {/* Content right */}
-                         <div className="flex flex-col h-full w-full">
-                            <div className="flex justify-between items-start mb-2">
-                                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-2 py-1">{item.tag}</span>
-                                <ExternalLink size={14} className="text-zinc-600 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors" />
-                            </div>
-                            <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                {item.title}
-                            </h3>
-                            <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-4 leading-relaxed">
-                                {item.summary}
-                            </p>
-                            <div className="mt-auto pt-4 border-t border-zinc-200 dark:border-zinc-700/50 flex justify-between items-center">
-                                 <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300">{item.source}</span>
-                                 <span className="text-[10px] text-zinc-400 dark:text-zinc-500">{item.date}</span>
-                            </div>
-                         </div>
-                     </a>
-                 ))}
-             </div>
-             
-             <div className="bg-white dark:bg-zinc-900 p-4 border-b border-zinc-200 dark:border-zinc-800 text-right">
-                 <button className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 text-sm font-bold inline-flex items-center gap-2 group px-4 py-2">
-                     View All Updates <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                 </button>
-             </div>
+          </section>
+
+          {/* RECHARGE HUB TEASER - Full Screen View */}
+          <section className="h-screen bg-white dark:bg-zinc-950 snap-start flex items-center justify-center relative">
+              <div className="max-w-7xl mx-auto px-4 w-full">
+                  <div className="flex flex-col md:flex-row items-center gap-12">
+                      <div className="flex-1 space-y-6">
+                          <h2 className="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white uppercase tracking-tighter leading-none">
+                              Recharge<br/>Hub
+                          </h2>
+                          <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed border-l-4 border-blue-500 pl-4">
+                              Pay later for Mobile, DTH, and Broadband.
+                          </p>
+                          <button 
+                            onClick={() => openOverlay('recharge')}
+                            className="bg-zinc-900 dark:bg-white text-white dark:text-black px-6 py-3 font-bold text-sm uppercase tracking-widest hover:opacity-90 transition-opacity flex items-center gap-2"
+                          >
+                              View Operators <ArrowRight size={18} />
+                          </button>
+                      </div>
+                      <div className="flex-1 grid grid-cols-2 gap-px bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800">
+                          {RECHARGE_PROVIDERS.slice(0, 4).map((cat, idx) => (
+                              <div key={idx} className={`p-6 bg-zinc-50 dark:bg-zinc-900 flex flex-col items-center justify-center text-center hover:bg-white dark:hover:bg-black transition-colors`}>
+                                  <cat.icon size={32} className={`mb-3 ${cat.color}`} />
+                                  <span className="font-bold text-sm text-zinc-900 dark:text-white uppercase tracking-wider">{cat.category}</span>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+              </div>
+          </section>
+
+          {/* FOOTER - Compact Full Screen */}
+          <footer className="h-screen bg-zinc-950 text-zinc-500 snap-start flex flex-col justify-center px-6 relative overflow-hidden border-t border-zinc-900">
+              <div className="max-w-7xl mx-auto w-full">
+                  
+                  {/* Grid Layout: 2 Cols on Mobile, 4 on Desktop */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-8 items-start">
+                      
+                      {/* Brand Column */}
+                      <div className="col-span-2 md:col-span-1 space-y-4">
+                          <div className="flex items-baseline space-x-2">
+                            <span className="text-2xl font-black text-white tracking-tighter">EC1000</span>
+                            <span className="text-2xl font-black text-emerald-600 tracking-tighter">Duo</span>
+                          </div>
+                          <p className="text-xs leading-relaxed max-w-xs text-zinc-400">
+                              Instant, ethical, regulated liquidity for Bharat. 
+                              <span className="block mt-1 text-emerald-600/50 font-medium">Digital India Initiative.</span>
+                          </p>
+                      </div>
+
+                      {/* Links */}
+                      <div>
+                          <h4 className="text-zinc-300 font-bold uppercase tracking-widest mb-4 text-xs">Legal</h4>
+                          <ul className="space-y-2 text-xs font-medium">
+                              <li><button onClick={() => openOverlay('privacy-policy')} className="hover:text-emerald-500 transition-colors text-left">Privacy Policy</button></li>
+                              <li><button onClick={() => openOverlay('terms')} className="hover:text-emerald-500 transition-colors text-left">Terms of Service</button></li>
+                              <li><button onClick={() => openOverlay('rbi-rules')} className="hover:text-emerald-500 transition-colors text-left">Regulatory Disclosures</button></li>
+                          </ul>
+                      </div>
+                      
+                      <div>
+                          <h4 className="text-zinc-300 font-bold uppercase tracking-widest mb-4 text-xs">Company</h4>
+                          <ul className="space-y-2 text-xs font-medium">
+                              <li><button onClick={() => openOverlay('about-us')} className="hover:text-emerald-500 transition-colors text-left">About Us</button></li>
+                              <li><button onClick={() => openOverlay('ethical-lending')} className="hover:text-emerald-500 transition-colors text-left">Ethical Lending</button></li>
+                              <li><a href="#" className="hover:text-emerald-500 transition-colors">Careers</a></li>
+                          </ul>
+                      </div>
+                      
+                      <div>
+                          <h4 className="text-zinc-300 font-bold uppercase tracking-widest mb-4 text-xs">Contact</h4>
+                          <ul className="space-y-2 text-xs font-medium">
+                              <li><button onClick={() => openOverlay('grievance')} className="hover:text-emerald-500 transition-colors text-left">Grievance Redressal</button></li>
+                              <li><a href="mailto:support@ec1000.in" className="hover:text-emerald-500 transition-colors">support@ec1000.in</a></li>
+                              <li>022-4567-8900</li>
+                          </ul>
+                      </div>
+                  </div>
+
+                  {/* Bottom Bar */}
+                  <div className="border-t border-zinc-900 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest font-bold text-zinc-600">
+                      <p>&copy; 2025 EC1000 Duo. Licensed LSP.</p>
+                      <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                          <span>Systems Operational</span>
+                      </div>
+                  </div>
+              </div>
+          </footer>
+      </div>
+
+      {/* OVERLAYS (Menu, Recharge, etc.) - same logic, kept for functionality */}
+      
+      {activeOverlay === 'menu' && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm animate-fade-in" onClick={closeOverlay}>
+              <div className="absolute right-0 top-0 bottom-0 w-80 bg-white dark:bg-zinc-950 shadow-2xl p-8 overflow-y-auto animate-slide-in-right" onClick={e => e.stopPropagation()}>
+                  <div className="flex justify-between items-center mb-12">
+                      <h2 className="text-2xl font-black uppercase tracking-tighter text-zinc-900 dark:text-white">Menu</h2>
+                      <button onClick={closeOverlay}><X size={24} /></button>
+                  </div>
+                  
+                  <div className="space-y-8">
+                      {Object.entries(INFO_PAGES).map(([key, page]) => (
+                          <button 
+                            key={key}
+                            onClick={() => openOverlay(key)}
+                            className="flex items-center space-x-4 text-lg font-bold text-zinc-600 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-500 w-full text-left group"
+                          >
+                              <page.icon size={24} className="text-zinc-400 group-hover:text-emerald-600 transition-colors" />
+                              <span>{page.title}</span>
+                          </button>
+                      ))}
+                      
+                      <hr className="border-zinc-200 dark:border-zinc-800" />
+                      
+                      <div className="space-y-4">
+                           <button onClick={() => openOverlay('recharge')} className="flex items-center space-x-4 text-lg font-bold text-blue-600 dark:text-blue-400 w-full text-left">
+                              <Smartphone size={24} />
+                              <span>Recharge Hub</span>
+                           </button>
+                      </div>
+                  </div>
+              </div>
           </div>
-      </section>
+      )}
 
-      {/* Testimonials - Rectangular Grid, No Gaps, Horizontal Layout */}
-      <section className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="w-full">
-            <div className="p-8 md:p-12 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
-                 <h2 className="text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight">Community Stories</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 lg:divide-x divide-zinc-200 dark:divide-zinc-800">
-                {TESTIMONIALS.map((t, i) => (
-                    <div key={i} className="bg-zinc-50 dark:bg-zinc-800/30 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors p-8 flex flex-col h-full">
-                        <div className="flex flex-row items-center space-x-4 mb-6">
-                            <div className={`shrink-0 w-14 h-14 flex items-center justify-center font-bold text-2xl ${t.color} bg-transparent border-2 border-zinc-300 dark:border-zinc-700 rounded-full`}>
-                                {t.name.charAt(0)}
-                            </div>
-                            <div>
-                                <p className="font-bold text-zinc-900 dark:text-white text-lg">{t.name}</p>
-                            </div>
-                        </div>
-                        <div className="border-l-4 border-zinc-300 dark:border-zinc-700 pl-6">
-                            <p className="text-zinc-600 dark:text-zinc-300 text-xl italic leading-relaxed">"{t.quote}"</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-      </section>
+      {/* RECHARGE OVERLAY */}
+      {activeOverlay === 'recharge' && (
+           <div className="fixed inset-0 z-50 bg-white dark:bg-zinc-950 overflow-y-auto animate-slide-in-right">
+               <div className="sticky top-0 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+                   <div className="flex items-center space-x-3">
+                       <button onClick={closeOverlay}><ChevronLeft size={24} /></button>
+                       <span className="font-bold text-lg uppercase tracking-widest">Recharge Hub</span>
+                   </div>
+               </div>
+               
+               <div className="max-w-4xl mx-auto p-4 py-12 space-y-12">
+                   {RECHARGE_PROVIDERS.map((section, idx) => (
+                       <div key={idx} className="space-y-6">
+                           <h3 className={`text-2xl font-black uppercase tracking-tight flex items-center gap-3 ${section.color}`}>
+                               <section.icon size={28} />
+                               {section.category}
+                           </h3>
+                           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800">
+                               {section.brands.map((brand, bIdx) => (
+                                   <a 
+                                     key={bIdx}
+                                     href={brand.url}
+                                     target="_blank"
+                                     rel="noopener noreferrer"
+                                     className="flex flex-col items-center p-8 bg-zinc-50 dark:bg-zinc-900 hover:bg-white dark:hover:bg-black transition-all group"
+                                   >
+                                       <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center p-3 mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                                           <img src={brand.logo} alt={brand.name} className="w-full h-full object-contain" />
+                                       </div>
+                                       <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200 uppercase tracking-wide">{brand.name}</span>
+                                   </a>
+                               ))}
+                           </div>
+                       </div>
+                   ))}
+               </div>
+           </div>
+      )}
 
-      {/* Footer - Zinc 950 - Left Aligned */}
-      <footer className="bg-zinc-100 dark:bg-zinc-950 py-12 border-t border-zinc-200 dark:border-zinc-900 pb-[calc(3rem+env(safe-area-inset-bottom))]">
-        <div className="max-w-6xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 border-b border-zinc-200 dark:border-zinc-900 pb-8">
-                 {/* Logo - simplified for footer */}
-                <div className="flex items-baseline space-x-1">
-                    <span className="font-bold text-2xl text-zinc-900 dark:text-white tracking-tight">EC1000</span>
-                    <span className="font-bold text-2xl text-emerald-600 dark:text-emerald-500 tracking-tight">Duo</span>
-                </div>
+      {/* GENERIC INFO PAGES */}
+      {activeOverlay && INFO_PAGES[activeOverlay] && (
+          <div className="fixed inset-0 z-50 bg-white dark:bg-zinc-950 overflow-y-auto animate-slide-in-right">
+               <div className="sticky top-0 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between z-10">
+                   <div className="flex items-center space-x-3">
+                       <button onClick={closeOverlay}><ChevronLeft size={24} /></button>
+                       <span className="font-bold text-lg uppercase tracking-widest">{INFO_PAGES[activeOverlay].title}</span>
+                   </div>
+               </div>
+               <div className="max-w-3xl mx-auto p-6 md:p-16 pb-24">
+                   <div className="mb-12 flex justify-center">
+                       <div className="w-24 h-24 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-400">
+                            {React.createElement(INFO_PAGES[activeOverlay].icon, { size: 48 })}
+                       </div>
+                   </div>
+                   <div className="prose dark:prose-invert max-w-none">
+                       {INFO_PAGES[activeOverlay].content}
+                   </div>
+               </div>
+          </div>
+      )}
 
-                {/* Flat Links - Aligned right on desktop, center on mobile */}
-                <div className="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-4 text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-                    <button onClick={() => openOverlay('grievance')} className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Grievance Redressal</button>
-                    <button onClick={() => openOverlay('rbi-rules')} className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">RBI Disclosures</button>
-                    <button onClick={() => openOverlay('privacy-policy')} className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Privacy Policy</button>
-                    <button onClick={() => openOverlay('terms')} className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Terms of Service</button>
-                    <button onClick={() => openOverlay('grievance')} className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Contact Us</button>
-                </div>
-            </div>
-
-            {/* Tagline & Copyright */}
-            <div className="flex flex-col md:flex-row justify-between items-center text-zinc-600 dark:text-zinc-600 text-xs">
-                <p className="font-medium text-zinc-500 mb-2 md:mb-0">EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span> - Your liquidity partner for daily essentials.</p>
-                <p>© 2025 EC1000 <span className="text-emerald-600 dark:text-emerald-500">Duo</span>. All rights reserved.</p>
-            </div>
-        </div>
-      </footer>
     </div>
   );
 };

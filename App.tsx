@@ -22,6 +22,7 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState('home');
   const [spendContext, setSpendContext] = useState<any>(null);
   const [isScanOpen, setIsScanOpen] = useState(false);
+  const [scanContext, setScanContext] = useState<{ categoryId?: number } | null>(null);
 
   // Check for existing session on mount
   useEffect(() => {
@@ -106,6 +107,7 @@ function AppContent() {
   const handleNavigate = (tab: string, context?: any) => {
     if (tab === 'scan') {
         setIsScanOpen(true);
+        setScanContext(context || null);
         window.history.pushState({ stage: stage, tab: activeTab, modal: 'scan' }, '');
         return;
     }
@@ -118,25 +120,34 @@ function AppContent() {
   };
 
   // Upgrades user after repayment: Increases Cumulative Spend Limit by 1000
-  const handleRepaymentSuccess = () => {
+  const handleRepaymentSuccess = (type: 'SPEND' | 'CASH') => {
       if (user) {
-          const updatedUser: UserState = {
-              ...user,
-              creditLevel: user.creditLevel + 1,
-              // Unlock additional 1000 cumulative limit across spend categories
-              totalLimit: user.totalLimit + 1000,
-              usedAmount: 0, // Clear spend dues
-              cashUsed: 0,   // Clear cash dues (if any)
-              ecScore: Math.min(900, user.ecScore + 50)
-          };
+          let updatedUser = { ...user };
+          
+          if (type === 'SPEND') {
+              updatedUser.usedAmount = 0; // Clear spend dues
+              updatedUser.totalLimit += 500; // Small limit bump
+          } else if (type === 'CASH') {
+              // Simulate installment payment (reduce by ~25% for demo)
+              const installment = Math.ceil(user.cashUsed / 4);
+              const newCashUsed = Math.max(0, user.cashUsed - installment);
+              updatedUser.cashUsed = newCashUsed;
+              
+              if (newCashUsed === 0) {
+                   updatedUser.creditLevel += 1;
+              }
+          }
+
+          updatedUser.ecScore = Math.min(900, user.ecScore + 20);
+          
           setUser(updatedUser);
           localStorage.setItem('ec1000_user', JSON.stringify(updatedUser));
-          handleNavigate('home');
       }
   };
 
   const closeScan = () => {
       setIsScanOpen(false);
+      setScanContext(null);
       // If closing manually, we go back to remove the modal state from history
       // This prevents the 'forward' button from reopening it unexpectedly
       window.history.back();
@@ -162,13 +173,13 @@ function AppContent() {
       <Layout activeTab={activeTab} onTabChange={handleNavigate}>
         {activeTab === 'home' && <Home user={user} onNavigate={handleNavigate} />}
         {activeTab === 'spend' && <ECSpend user={user} onNavigate={handleNavigate} initialCategory={spendContext?.categoryId} />}
-        {activeTab === 'repayments' && <Repayments onRepaySuccess={handleRepaymentSuccess} />}
+        {activeTab === 'repayments' && <Repayments user={user} onRepaySuccess={handleRepaymentSuccess} />}
         {activeTab === 'history' && <History />}
         {activeTab === 'profile' && <Profile user={user} onLogout={handleLogout} />}
       </Layout>
       
       {/* Modals/Overlays */}
-      {isScanOpen && <ScanPay onClose={closeScan} user={user} />}
+      {isScanOpen && <ScanPay onClose={closeScan} user={user} initialCategoryId={scanContext?.categoryId} />}
     </>
   );
 }

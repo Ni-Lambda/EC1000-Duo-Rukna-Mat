@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Grid, Repeat, Clock, User, HelpCircle, ShieldCheck, Sun, Moon } from 'lucide-react';
+import { Home, Grid, Repeat, Clock, User, HelpCircle, ShieldCheck, Sun, Moon, Languages } from 'lucide-react';
 import { useTheme } from '../ThemeContext';
 
 interface LayoutProps {
@@ -10,15 +10,19 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, language, setLanguage } = useTheme();
 
   const navItems = [
-    { id: 'home', label: 'Home', icon: Home },
+    { id: 'home', label: language === 'en' ? 'Home' : 'Home', icon: Home },
     { id: 'spend', label: 'EC Duo', icon: Grid }, // Renamed to EC Duo
-    { id: 'repayments', label: 'Repayments', icon: Repeat },
-    { id: 'history', label: 'History', icon: Clock },
-    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'repayments', label: language === 'en' ? 'Repayments' : 'Repay', icon: Repeat },
+    { id: 'history', label: language === 'en' ? 'History' : 'History', icon: Clock },
+    { id: 'profile', label: language === 'en' ? 'Profile' : 'Profile', icon: User },
   ];
+
+  const toggleLanguage = () => {
+      setLanguage(language === 'en' ? 'hi' : 'en');
+  };
 
   const renderNav = (isMobile: boolean) => (
     <nav className={`
@@ -62,7 +66,14 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange
             </div>
             <span className="text-[10px] text-slate-500 dark:text-zinc-500 font-medium tracking-wide mt-0.5">Rukna Mat - Dont Stop</span>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2">
+           <button 
+                onClick={toggleLanguage}
+                className="flex items-center space-x-1 px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-xs font-bold text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700"
+           >
+               <Languages size={14} />
+               <span>{language === 'en' ? 'EN' : 'HI'}</span>
+           </button>
            <button onClick={toggleTheme} className="text-slate-600 dark:text-zinc-400 p-1">
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
            </button>
@@ -88,6 +99,15 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange
           {renderNav(false)}
         </div>
         <div className="p-4 border-t border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950">
+             <div className="flex justify-between items-center mb-3">
+                 <button 
+                    onClick={toggleLanguage}
+                    className="flex items-center space-x-1 px-2 py-1 rounded bg-zinc-200 dark:bg-zinc-800 text-xs font-bold text-zinc-600 dark:text-zinc-300"
+                 >
+                    <Languages size={14} />
+                    <span>{language === 'en' ? 'English' : 'हिंदी'}</span>
+                 </button>
+             </div>
              <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-zinc-500">
                 <ShieldCheck size={14} className="text-green-600 dark:text-emerald-500"/>
                 <span>RBI-regulated Partner</span>

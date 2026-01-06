@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '../components/Button';
 import { UserState, SPEND_CATEGORIES, SpendCategoryType } from '../types';
 import * as Icons from 'lucide-react';
+import { useTheme } from '../ThemeContext';
 
 interface HomeProps {
   user: UserState;
@@ -9,6 +10,7 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
+  const { t } = useTheme();
   const percentageUsed = (user.usedAmount / user.totalLimit) * 100;
   
   const handleCategoryClick = (category: any) => {
@@ -22,9 +24,9 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
       {/* Personalized Greeting & Score */}
       <div className="flex justify-between items-center px-1">
           <div>
-              <h1 className="text-2xl font-bold text-zinc-800 dark:text-white">Hi, {firstName} <span className="text-2xl">👋</span></h1>
+              <h1 className="text-2xl font-bold text-zinc-800 dark:text-white">{t('welcome')}, {firstName} <span className="text-2xl">👋</span></h1>
               <div className="flex items-center space-x-2">
-                 <span className="text-sm text-zinc-500 dark:text-zinc-400">EC Score:</span>
+                 <span className="text-sm text-zinc-500 dark:text-zinc-400">{t('ec_score')}:</span>
                  <span className={`text-sm font-bold ${user.ecScore > 700 ? 'text-green-600' : 'text-orange-500'}`}>{user.ecScore}</span>
               </div>
           </div>
@@ -39,8 +41,8 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
       <div className="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 p-3 flex items-center gap-3">
           <Icons.ShieldCheck className="text-emerald-600 dark:text-emerald-500 shrink-0" size={20} />
           <div>
-              <p className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase">RBI Guard Rails Active</p>
-              <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight">Spends restricted to essentials. P2P transfers blocked.</p>
+              <p className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase">{t('guard_rails')}</p>
+              <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight">{t('guard_desc')}</p>
           </div>
       </div>
 
@@ -48,7 +50,7 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
       <div className="bg-white dark:bg-zinc-900 border-l-4 border-blue-600 p-6 shadow-sm">
         <div className="flex justify-between items-start mb-2">
             <div>
-                <h2 className="text-zinc-500 dark:text-zinc-400 text-sm uppercase tracking-wide font-bold mb-1">Cumulative Spend Limit</h2>
+                <h2 className="text-zinc-500 dark:text-zinc-400 text-sm uppercase tracking-wide font-bold mb-1">{t('spend_limit')}</h2>
                 <div className="flex items-baseline space-x-2">
                     <span className="text-4xl font-bold text-zinc-800 dark:text-white">₹{user.totalLimit - user.usedAmount}</span>
                     <span className="text-sm text-zinc-400 font-medium">/ ₹{user.totalLimit}</span>
@@ -67,14 +69,14 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
             ></div>
         </div>
         <div className="flex justify-between mt-2 text-xs font-bold text-zinc-500 dark:text-zinc-400">
-            <span>Used: ₹{user.usedAmount}</span>
-            <span className="text-blue-600 dark:text-blue-400">Spend across Fuel, Grocery, Pharma...</span>
+            <span>{t('used')}: ₹{user.usedAmount}</span>
+            <span className="text-blue-600 dark:text-blue-400">{t('shared_limit')}</span>
         </div>
 
         <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
             <div className="flex items-center gap-2 text-xs text-orange-600 dark:text-orange-400 font-medium bg-orange-50 dark:bg-orange-900/10 p-2">
                 <Icons.TrendingUp size={12} />
-                <span>Next Level: Repay to unlock +₹1000 Spend Limit!</span>
+                <span>{t('next_level')}</span>
             </div>
         </div>
       </div>
@@ -99,7 +101,7 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
                       </div>
                   </div>
                   <h3 className="text-xl font-extrabold text-white leading-none mb-1">EC Cash</h3>
-                  <p className="text-zinc-400 text-xs font-medium leading-tight mb-2">Self-transfer only</p>
+                  <p className="text-zinc-400 text-xs font-medium leading-tight mb-2">{t('ec_cash_desc')}</p>
                   
                   {/* Separate Limit Badge */}
                   <div className="inline-block bg-zinc-800 border border-zinc-700 rounded px-2 py-1">
@@ -110,7 +112,7 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
 
               <div className="relative z-10 mt-3">
                   <button className="bg-green-600 text-white text-xs font-bold px-4 py-2 uppercase tracking-wider flex items-center space-x-1 group-hover:bg-green-500 transition-colors w-fit shadow-lg">
-                      <span>Get Now</span>
+                      <span>{t('get_now')}</span>
                       <Icons.ArrowRight size={12} />
                   </button>
               </div>
@@ -129,8 +131,8 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
                           <Icons.QrCode size={20} />
                       </div>
                   </div>
-                  <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white leading-none mb-2">Scan & Pay</h3>
-                  <p className="text-zinc-500 dark:text-zinc-400 text-xs font-medium leading-tight mb-2">Verified Merchants Only</p>
+                  <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white leading-none mb-2">{t('scan_pay')}</h3>
+                  <p className="text-zinc-500 dark:text-zinc-400 text-xs font-medium leading-tight mb-2">{t('scan_desc')}</p>
                   
                   <div className="text-xs font-bold text-blue-600 dark:text-blue-400">
                       Using Spend Limit
@@ -139,7 +141,7 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
 
               <div className="relative z-10 mt-3">
                    <button className="bg-blue-600 text-white text-xs font-bold px-4 py-2 uppercase tracking-wider flex items-center space-x-1 group-hover:bg-blue-700 transition-colors w-fit shadow-lg">
-                      <span>Scan QR</span>
+                      <span>{t('scan_btn')}</span>
                       <Icons.ScanLine size={12} />
                   </button>
               </div>
@@ -148,7 +150,7 @@ export const Home: React.FC<HomeProps> = ({ user, onNavigate }) => {
 
       {/* Quick Spend Tiles */}
       <div>
-        <h3 className="text-zinc-800 dark:text-white font-bold mb-4 px-1">Quick Categories</h3>
+        <h3 className="text-zinc-800 dark:text-white font-bold mb-4 px-1">{t('quick_cat')}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {SPEND_CATEGORIES.slice(0, 4).map((cat) => {
                 // @ts-ignore

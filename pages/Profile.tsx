@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UserState } from '../types';
-import { User, Phone, FileText, LogOut, MessageCircle } from 'lucide-react';
+import { User, Phone, FileText, LogOut, MessageCircle, TrendingUp, ChevronRight, Loader2, ShieldCheck } from 'lucide-react';
 
 interface ProfileProps {
     user: UserState;
@@ -8,6 +8,9 @@ interface ProfileProps {
 }
 
 export const Profile: React.FC<ProfileProps> = ({ user, onLogout }) => {
+  const [isBoosting, setIsBoosting] = useState(false);
+  const [boostStep, setBoostStep] = useState(0);
+
   const menuItems = [
       { icon: User, label: 'Personal Details', desc: 'Name, Email, KYC Status' },
       { icon: FileText, label: 'Loan Agreements (KFS)', desc: 'View your signed documents' },
@@ -15,8 +18,26 @@ export const Profile: React.FC<ProfileProps> = ({ user, onLogout }) => {
       { icon: MessageCircle, label: 'Grievance Redressal', desc: 'Report an issue' },
   ];
 
+  const handleBoostLimit = () => {
+      setIsBoosting(true);
+      // Simulate Account Aggregator Fetch
+      let step = 0;
+      const interval = setInterval(() => {
+          step++;
+          setBoostStep(step);
+          if (step >= 4) {
+              clearInterval(interval);
+              setTimeout(() => {
+                  setIsBoosting(false);
+                  setBoostStep(0);
+                  alert("Limit Boost Request Submitted! Our underwriting AI is analyzing your bank statement.");
+              }, 1000);
+          }
+      }, 1000);
+  };
+
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in pb-10">
         <h2 className="text-2xl font-bold text-zinc-800 dark:text-white px-1">Profile</h2>
 
         {/* User Card - Sharp */}
@@ -31,6 +52,43 @@ export const Profile: React.FC<ProfileProps> = ({ user, onLogout }) => {
                     KYC Verified
                 </div>
             </div>
+        </div>
+
+        {/* Account Aggregator Limit Boost - New Feature */}
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 p-6 text-white shadow-lg relative overflow-hidden group cursor-pointer" onClick={!isBoosting ? handleBoostLimit : undefined}>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
+            
+            {!isBoosting ? (
+                <>
+                    <div className="relative z-10 flex justify-between items-center">
+                        <div>
+                            <h3 className="font-bold text-lg flex items-center gap-2">
+                                <TrendingUp size={20} className="text-yellow-300" />
+                                Boost Your Limit
+                            </h3>
+                            <p className="text-emerald-100 text-xs mt-1 max-w-[200px]">Link your main bank account securely to unlock up to ₹5,000.</p>
+                        </div>
+                        <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
+                            <ChevronRight size={24} />
+                        </div>
+                    </div>
+                    <div className="mt-4 flex items-center gap-2 text-[10px] text-emerald-200 font-medium">
+                        <span className="bg-black/20 px-2 py-1 rounded">Powered by Account Aggregator</span>
+                        <ShieldCheck size={12} />
+                    </div>
+                </>
+            ) : (
+                <div className="relative z-10 text-center py-2">
+                     <Loader2 className="animate-spin mx-auto mb-2 text-yellow-300" size={28} />
+                     <p className="font-bold text-sm">
+                        {boostStep === 1 && "Connecting to Anumati AA..."}
+                        {boostStep === 2 && "Requesting Bank Statement..."}
+                        {boostStep === 3 && "Analyzing Cash Flow..."}
+                        {boostStep === 4 && "Finalizing Offer..."}
+                     </p>
+                     <p className="text-xs text-emerald-200 mt-1">100% Secure & RBI Regulated</p>
+                </div>
+            )}
         </div>
 
         {/* Menu - Sharp */}
